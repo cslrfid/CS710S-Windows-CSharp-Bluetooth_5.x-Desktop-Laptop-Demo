@@ -63,7 +63,7 @@ namespace CSLibrary
             }
             catch (Exception ex)
             {
-
+                Debug.WriteLine("Program execption error, please check!!! error message : " + ex.Message);
             }
 
             _readerState = READERSTATE.IDLE;
@@ -143,11 +143,10 @@ namespace CSLibrary
             try
             {
                 byte[] data = characteristicUpdatedEventArgs.Characteristic.Value;
+                if (data == null)
+                    return;
+ 
                 CSLibrary.Debug.WriteBytes("BT data received", data);
-
-                if (data.Length == 216)
-                    Debug.WriteLine("CheckAPIHeader Point");
-
                 CharacteristicOnValueUpdated(data);
             }
             catch (Exception ex)
@@ -195,6 +194,7 @@ namespace CSLibrary
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("Program execption error, please check!!! error message : " + ex.Message);
             }
             _device = null;
 
@@ -225,6 +225,7 @@ namespace CSLibrary
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("Program execption error, please check!!! error message : " + ex.Message);
             }
             _device = null;
 

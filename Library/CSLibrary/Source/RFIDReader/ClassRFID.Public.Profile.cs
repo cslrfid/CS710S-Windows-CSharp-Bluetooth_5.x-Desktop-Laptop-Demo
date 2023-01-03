@@ -72,7 +72,7 @@ namespace CSLibrary
         /// <returns></returns>
         public Result SetCurrentLinkProfile(uint profile)
         {
-            RFIDRegister.RfMode.Set(profile);
+            RFIDRegister.AntennaPortConfig.RfMode((UInt16)profile);
             return Result.OK;
         }
 

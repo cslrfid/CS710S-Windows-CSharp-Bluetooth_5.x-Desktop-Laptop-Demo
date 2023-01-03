@@ -36,6 +36,9 @@ namespace CSLibrary
 
         private void CharacteristicOnValueUpdated(byte [] data)
         {
+            if (data == null)
+                return;
+
             if (!CheckAPIHeader(data) || data[2] != (data.Length - 8))
                 return;
 

@@ -241,17 +241,31 @@ namespace CSLibrary
 
         internal class RegAntennaPortConfig
         {
+            internal class AntennaPortConfig
+            {
+                public bool enable = false;
+                public UInt16 dwell = 2000;
+                public UInt16 power = 3000;
+                public UInt32 inventoryRoundControl;
+                public UInt32 inventoryRoundControl2;
+                public bool toggle = true;
+                public UInt16 rfMode = 5;
+            }
+
             internal RFIDReader _handler;
             internal UInt16 regAdd;
-            internal byte[] data;
+            internal AntennaPortConfig [] data = new AntennaPortConfig[7];
             internal REGPRIVATE Private;
 
             internal RegAntennaPortConfig(RFIDReader handler)
             {
                 this._handler = handler;
                 regAdd = 0x3030;
-                data = new byte[256];
+                //data = new AntennaPortConfig[7];
                 this.Private = REGPRIVATE.READWRITE;
+                for (int cnt = 0; cnt < 7; cnt++)
+                    data[cnt] = new AntennaPortConfig();
+                data[0].enable = true;
             }
 
             internal void Enable(bool enable, byte port = 0)
@@ -259,15 +273,14 @@ namespace CSLibrary
                 if (Private == REGPRIVATE.READONLY)
                     return;
 
+                if (data[port].enable == enable)
+                    return;
+
                 byte[] sendData = new byte[1];
                 int dataAdd = (port * 16);
+                data[port].enable = enable;
 
-                if (enable)
-                    data[dataAdd] = 1;
-                else
-                    data[dataAdd] = 0;
-
-                sendData[0] = data[dataAdd];
+                sendData[0] = (byte)(data[port].enable ? 1 : 0);
                 _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
             }
 
@@ -276,30 +289,34 @@ namespace CSLibrary
                 if (Private == REGPRIVATE.READONLY)
                     return;
 
+                if (data[port].dwell == ms)
+                    return;
+
                 byte[] sendData = new byte[2];
                 int dataAdd = 1 + (port * 16);
 
-                data[dataAdd] = (byte)(ms >> 8);
-                data[dataAdd + 1] = (byte)(ms);
+                data[port].dwell = ms;
+                sendData[dataAdd] = (byte)(ms >> 8);
+                sendData[dataAdd + 1] = (byte)(ms);
 
-                Array.Copy(data, dataAdd, sendData, 0, 2);
                 _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
             }
 
             internal void SetPower(UInt16 power, byte port = 0)
             {
-                power *= 10;
-
                 if (Private == REGPRIVATE.READONLY)
+                    return;
+
+                if (data[port].power == power)
                     return;
 
                 byte[] sendData = new byte[2];
                 int dataAdd = 3 + (port * 16);
 
-                data[dataAdd] = (byte)(power >> 8);
-                data[dataAdd + 1] = (byte)(power);
+                data[port].power = power;
+                sendData[0] = (byte)(power >> 8);
+                sendData[1] = (byte)(power);
 
-                Array.Copy(data, dataAdd, sendData, 0, 2);
                 _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
             }
 
@@ -308,13 +325,7 @@ namespace CSLibrary
                 if (Private == REGPRIVATE.WRITEONLY)
                     return 0;
 
-                byte[] sendData = new byte[2];
-                int dataAdd = 3 + (port * 16);
-                int power;
-
-                power = (data[dataAdd] << 8 | data[dataAdd + 1]);
-
-                return (UInt16)power;
+                return (UInt16)data[port].power;
             }
 
             internal void SetTargetToggle(bool enable, byte port = 0)
@@ -322,18 +333,347 @@ namespace CSLibrary
                 if (Private == REGPRIVATE.READONLY)
                     return;
 
+                if (data[port].toggle == enable)
+                    return;
+
                 byte[] sendData = new byte[1];
                 int dataAdd = 13 + (port * 16);
 
-                if (enable)
-                    data[dataAdd] = 1;
-                else
-                    data[dataAdd] = 0;
+                data[port].toggle = enable;
 
-                sendData[0] = data[dataAdd];
+                sendData[0] = (byte)(enable ? 1 : 0);
                 _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
             }
+
+            // if == 0 DynamicQ, != 0 FixedQ 
+            internal int GetCurrentAlgorithm(int port = 0)
+            {
+                if (Private == REGPRIVATE.READONLY)
+                    return -1;
+
+                int dataAdd = 5 + (port * 16);
+
+                return (int)(data[port].inventoryRoundControl & (1U << 16));
+            }
+
+            internal void EnableFixedQ(int port = 0)
+            {
+                if (Private == REGPRIVATE.READONLY)
+                    return;
+
+                int dataAdd = 5 + (port * 16);
+
+                data[port].inventoryRoundControl |= (1U << 16);
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].inventoryRoundControl);
+            }
+
+            internal void EnableFixedQ(uint InitialQ, uint QueryTarget, int port = 0)
+            {
+                if (InitialQ > 15 || QueryTarget > 1)
+                    return;
+
+                int dataAdd = 5 + (port * 16);
+
+                data[port].inventoryRoundControl &= 0xff7ffff0;
+
+                data[port].inventoryRoundControl |= InitialQ;
+                data[port].inventoryRoundControl |= (1U << 16);
+                data[port].inventoryRoundControl |= QueryTarget;
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].inventoryRoundControl);
+            }
+
+            internal void EnableDynamicQ(int port = 0)
+            {
+                int dataAdd = 5 + (port * 16);
+
+                data[port].inventoryRoundControl &= ~(1U << 16);
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].inventoryRoundControl);
+            }
+
+            /// <summary>
+            /// Set Dynamic Q parameters and enabled
+            /// </summary>
+            /// <param name="MinQ"></param>
+            /// <param name="MaxQ"></param>
+            /// <param name="InitialQ"></param>
+            /// <param name="NumMinQCycles"></param>
+            /// <param name="QDecreaseUseQuery"></param>
+            /// <param name="QIncreaseUseQuery"></param>
+            /// <param name="Session"></param>
+            /// <param name="QueryTarget"></param>
+            /// <returns></returns>
+            internal int EnableDynamicQ(uint MinQ, uint MaxQ, uint InitialQ, uint NumMinQCycles, bool QDecreaseUseQuery, bool QIncreaseUseQuery, uint QueryTarget, int port = 0)
+            {
+                if (MinQ > 15 || MaxQ > 15 || InitialQ > 15 || NumMinQCycles > 153 || QueryTarget > 1)
+                    return -1;
+
+                int dataAdd = 5 + (port * 16);
+
+                data[port].inventoryRoundControl &= 0xff780000;
+
+                data[port].inventoryRoundControl |= InitialQ << 0;
+                data[port].inventoryRoundControl |= MaxQ << 4;
+                data[port].inventoryRoundControl |= MinQ << 8;
+                data[port].inventoryRoundControl |= NumMinQCycles << 12;
+                data[port].inventoryRoundControl |= QIncreaseUseQuery ? (1U << 17) : 0;
+                data[port].inventoryRoundControl |= QDecreaseUseQuery ? (1U << 18) : 0;
+                data[port].inventoryRoundControl |= QueryTarget;
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].inventoryRoundControl);
+                return 0;
+            }
+
+            
+            internal void MaxQSinceValidEpc(UInt32 Q, int port = 0)
+            {
+                if (data[port].inventoryRoundControl2 == Q)
+                    return;
+
+                int dataAdd = 9 + (port * 16);
+
+                data[port].inventoryRoundControl2 = Q;
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].inventoryRoundControl2);
+            }
+
+
+            internal void SetFastID(bool enable, int port = 0)
+            {
+                int dataAdd = 5 + (port * 16);
+
+                if (enable)
+                    data[port].inventoryRoundControl |= (1U << 25);
+                else
+                    data[port].inventoryRoundControl &= ~(1U << 25);
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].inventoryRoundControl);
+            }
+
+            internal void SetTagFocus(bool enable, int port = 0)
+            {
+                int dataAdd = 5 + (port * 16);
+
+                if (enable)
+                    data[port].inventoryRoundControl |= (1U << 26);
+                else
+                    data[port].inventoryRoundControl &= ~(1U << 26);
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].inventoryRoundControl);
+            }
+
+            internal void RfMode(UInt16 mode, int port = 0)
+            {
+                if (data[port].rfMode == mode)
+                    return;
+
+                int dataAdd = 14 + (port * 16);
+                data[port].rfMode = mode;
+
+                _handler.WriteRegister((UInt16)(regAdd + dataAdd), data[port].rfMode);
+            }
         }
+
+
+        /*
+                internal class RegAntennaPortConfig
+                {
+                    internal RFIDReader _handler;
+                    internal UInt16 regAdd;
+                    internal byte[] data;
+                    internal REGPRIVATE Private;
+
+                    internal RegAntennaPortConfig(RFIDReader handler)
+                    {
+                        this._handler = handler;
+                        regAdd = 0x3030;
+                        data = new byte[256];
+                        this.Private = REGPRIVATE.READWRITE;
+                    }
+
+                    internal void Enable(bool enable, byte port = 0)
+                    {
+                        if (Private == REGPRIVATE.READONLY)
+                            return;
+
+                        byte[] sendData = new byte[1];
+                        int dataAdd = (port * 16);
+
+                        if (enable)
+                            data[dataAdd] = 1;
+                        else
+                            data[dataAdd] = 0;
+
+                        sendData[0] = data[dataAdd];
+                        _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
+                    }
+
+                    internal void SetDwell(UInt16 ms, byte port = 0)
+                    {
+                        if (Private == REGPRIVATE.READONLY)
+                            return;
+
+                        byte[] sendData = new byte[2];
+                        int dataAdd = 1 + (port * 16);
+
+                        data[dataAdd] = (byte)(ms >> 8);
+                        data[dataAdd + 1] = (byte)(ms);
+
+                        Array.Copy(data, dataAdd, sendData, 0, 2);
+                        _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
+                    }
+
+                    internal void SetPower(UInt16 power, byte port = 0)
+                    {
+                        power *= 10;
+
+                        if (Private == REGPRIVATE.READONLY)
+                            return;
+
+                        byte[] sendData = new byte[2];
+                        int dataAdd = 3 + (port * 16);
+
+                        data[dataAdd] = (byte)(power >> 8);
+                        data[dataAdd + 1] = (byte)(power);
+
+                        Array.Copy(data, dataAdd, sendData, 0, 2);
+                        _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
+                    }
+
+                    internal UInt16 GetPower(byte port = 0)
+                    {
+                        if (Private == REGPRIVATE.WRITEONLY)
+                            return 0;
+
+                        byte[] sendData = new byte[2];
+                        int dataAdd = 3 + (port * 16);
+                        int power;
+
+                        power = (data[dataAdd] << 8 | data[dataAdd + 1]);
+
+                        return (UInt16)power;
+                    }
+
+                    internal void SetTargetToggle(bool enable, byte port = 0)
+                    {
+                        if (Private == REGPRIVATE.READONLY)
+                            return;
+
+                        byte[] sendData = new byte[1];
+                        int dataAdd = 13 + (port * 16);
+
+                        if (enable)
+                            data[dataAdd] = 1;
+                        else
+                            data[dataAdd] = 0;
+
+                        sendData[0] = data[dataAdd];
+                        _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
+                    }
+
+                    // if == 0 DynamicQ, != 0 FixedQ 
+                    internal int GetCurrentAlgorithm(int port = 0)
+                    {
+                        if (Private == REGPRIVATE.READONLY)
+                            return -1;
+
+                        int dataAdd = 5 + (port * 16);
+
+                        return (int)(data[dataAdd] & (1U << 16));
+                    }
+
+                    internal void EnableFixedQ(int port = 0)
+                    {
+                        if (Private == REGPRIVATE.READONLY)
+                            return;
+
+                        int dataAdd = 5 + (port * 16);
+
+                        data[dataAdd] = data[dataAdd] | (1U << 16);
+
+                        Set(data);
+                    }
+
+                    internal void EnableFixedQ(uint InitialQ, uint QueryTarget)
+                    {
+                        if (InitialQ > 15 || QueryTarget > 1)
+                            return;
+
+                        UInt32 data = _data & 0xff7ffff0;
+
+                        data |= InitialQ;
+                        data |= (1U << 16);
+                        data |= QueryTarget;
+
+                        Set(data);
+                    }
+
+                    internal void EnableDynamicQ()
+                    {
+                        var data = _data & ~(1U << 16);
+
+                        Set(data);
+                    }
+
+                    /// <summary>
+                    /// Set Dynamic Q parameters and enabled
+                    /// </summary>
+                    /// <param name="MinQ"></param>
+                    /// <param name="MaxQ"></param>
+                    /// <param name="InitialQ"></param>
+                    /// <param name="NumMinQCycles"></param>
+                    /// <param name="QDecreaseUseQuery"></param>
+                    /// <param name="QIncreaseUseQuery"></param>
+                    /// <param name="Session"></param>
+                    /// <param name="QueryTarget"></param>
+                    /// <returns></returns>
+                    internal int EnableDynamicQ(uint MinQ, uint MaxQ, uint InitialQ, uint NumMinQCycles, bool QDecreaseUseQuery, bool QIncreaseUseQuery, uint QueryTarget)
+                    {
+                        if (MinQ > 15 || MaxQ > 15 || InitialQ > 15 || NumMinQCycles > 153 || QueryTarget > 1)
+                            return -1;
+
+                        UInt32 data = _data & 0xff780000;
+
+                        data |= InitialQ << 0;
+                        data |= MaxQ << 4;
+                        data |= MinQ << 8;
+                        data |= NumMinQCycles << 12;
+                        data |= QIncreaseUseQuery ? (1U << 17) : 0;
+                        data |= QDecreaseUseQuery ? (1U << 18) : 0;
+                        data |= QueryTarget;
+
+                        Set(data);
+
+                        return 0;
+                    }
+
+                    internal void SetFastID(bool enable)
+                    {
+                        var data = _data;
+
+                        if (enable)
+                            data |= (1U << 25);
+                        else
+                            data &= ~(1U << 25);
+
+                        Set(data);
+                    }
+
+                    internal void SetTagFocus(bool enable)
+                    {
+                        var data = _data;
+
+                        if (enable)
+                            data |= (1U << 26);
+                        else
+                            data &= ~(1U << 26);
+
+                        Set(data);
+                    }
+                }
+        */
 
         internal class RegSelectConfiguration
         {
@@ -367,9 +707,32 @@ namespace CSLibrary
                 _handler.WriteRegister((UInt16)(regAdd + dataAdd), sendData);
             }
 
+            internal void Set(uint index, bool enable)
+            {
+                if (Private == REGPRIVATE.READONLY)
+                    return;
+
+                if (index >= 7)
+                    return;
+
+                byte[] sendData = new byte[1];
+                uint add = (index * 42);
+
+                if (enable)
+                    data[add] = 1;
+                else
+                    data[add] = 0;
+
+                Array.Copy(data, index, sendData, 0, sendData.Length);
+                _handler.WriteRegister((UInt16)(regAdd + add), sendData);
+            }
+
             internal void Set(int index, bool enable, byte bank, UInt32 offset, byte len, byte[] mask, byte target, byte action, byte delay)
             {
                 if (Private == REGPRIVATE.READONLY)
+                    return;
+
+                if (index >= 7)
                     return;
 
                 byte[] sendData = new byte[42];
@@ -561,19 +924,16 @@ namespace CSLibrary
                 Set(data);
             }
 
-            internal void EnableFixedQ(uint InitialQ, uint NumMinQCycles, uint Session, uint SelinQueryCommand, bool QueryTarget, bool HaltOnAllTags)
+            internal void EnableFixedQ(uint InitialQ, uint QueryTarget)
             {
-                UInt32 data = _data & 0xff000000;
-
-                if (InitialQ > 15 || NumMinQCycles > 15 || Session > 3 || SelinQueryCommand > 3)
+                if (InitialQ > 15 || QueryTarget > 1)
                     return;
 
-                data |= InitialQ << 0;
-                data |= NumMinQCycles << 12;
-                data |= Session << 19;
-                data |= SelinQueryCommand << 21;
-                data |= QueryTarget ? (1U << 23) : 0;
-                data |= HaltOnAllTags ? (1U << 24) : 0;
+                UInt32 data = _data & 0xff7ffff0;
+
+                data |= InitialQ;
+                data |= (1U << 16);
+                data |= QueryTarget;
 
                 Set(data);
             }
@@ -595,16 +955,14 @@ namespace CSLibrary
             /// <param name="QDecreaseUseQuery"></param>
             /// <param name="QIncreaseUseQuery"></param>
             /// <param name="Session"></param>
-            /// <param name="SelinQueryCommand"></param>
             /// <param name="QueryTarget"></param>
-            /// <param name="HaltOnAllTags"></param>
             /// <returns></returns>
-            internal int EnableDynamicQ(uint MinQ, uint MaxQ, uint InitialQ, uint NumMinQCycles, bool QDecreaseUseQuery, bool QIncreaseUseQuery, uint Session, uint SelinQueryCommand, bool QueryTarget, bool HaltOnAllTags)
+            internal int EnableDynamicQ(uint MinQ, uint MaxQ, uint InitialQ, uint NumMinQCycles, bool QDecreaseUseQuery, bool QIncreaseUseQuery, uint QueryTarget)
             {
-                UInt32 data = _data & 0xff000000;
-
-                if (MinQ > 15 || MaxQ > 15 || InitialQ > 15 || NumMinQCycles > 15 || Session > 3 || SelinQueryCommand > 3)
+                if (MinQ > 15 || MaxQ > 15 || InitialQ > 15 || NumMinQCycles > 153 || QueryTarget > 1)
                     return -1;
+
+                UInt32 data = _data & 0xff780000;
 
                 data |= InitialQ << 0;
                 data |= MaxQ << 4;
@@ -612,18 +970,14 @@ namespace CSLibrary
                 data |= NumMinQCycles << 12;
                 data |= QIncreaseUseQuery ? (1U << 17) : 0;
                 data |= QDecreaseUseQuery ? (1U << 18) : 0;
-                data |= Session << 19;
-                data |= SelinQueryCommand << 21;
-                data |= QueryTarget ? (1U << 23) : 0;
-                data |= HaltOnAllTags ? (1U << 24) : 0;
-                //data |= FastIDEnable.Get();
+                data |= QueryTarget;
 
                 Set(data);
 
                 return 0;
             }
 
-            internal void FastIDEnable(bool enable)
+            internal void SetFastID(bool enable)
             {
                 var data = _data;
 
@@ -635,9 +989,17 @@ namespace CSLibrary
                 Set(data);
             }
 
+            internal void SetTagFocus(bool enable)
+            {
+                var data = _data;
 
+                if (enable)
+                    data |= (1U << 26);
+                else
+                    data &= ~(1U << 26);
 
-
+                Set(data);
+            }
         }
 
         internal class CSLRFIDREGISTER
@@ -682,7 +1044,7 @@ namespace CSLibrary
             internal RegUInt32 TxFineGain;
             internal RegUInt32 RxGainControl;
             internal RegUInt32 TxCoarseGain;
-            internal RegUInt32 RfMode;
+            //internal RegUInt32 RfMode;
             internal RegUInt32 DcOffset;
             internal RegUInt32 CwOffTime;
             internal Regbyte SjcControl;
@@ -693,8 +1055,8 @@ namespace CSLibrary
             internal RegUInt32 SjcResultI;
             internal RegUInt32 SjcResultQ;
             internal RegUInt32 AnalogEnable;
-            internal RegInventoryRoundControl InventoryRoundControl;
-            internal RegUInt32 InventoryRoundControl_2;
+            //internal RegInventoryRoundControl InventoryRoundControl;
+            //internal RegUInt32 InventoryRoundControl_2;
             internal RegUInt16 NominalStopTime;
             internal RegUInt16 ExtendedStopTime;
             internal RegUInt16 RegulatoryStopTime;
@@ -731,6 +1093,7 @@ namespace CSLibrary
 
             public CSLRFIDREGISTER(RFIDReader _deviceHandler)
             {
+
                 this._handler = _deviceHandler;
 
                 CommandResult = new RegUInt32(_deviceHandler, 0x0000, REGPRIVATE.READONLY);
@@ -771,7 +1134,7 @@ namespace CSLibrary
                 TxFineGain = new RegUInt32(_deviceHandler, 0x504, REGPRIVATE.READWRITE);
                 RxGainControl = new RegUInt32(_deviceHandler, 0x0508, REGPRIVATE.READWRITE);
                 TxCoarseGain = new RegUInt32(_deviceHandler, 0x050c, REGPRIVATE.READWRITE);
-                RfMode = new RegUInt32(_deviceHandler, 0x0514, REGPRIVATE.READWRITE);
+                //RfMode = new RegUInt32(_deviceHandler, 0x0514, REGPRIVATE.READWRITE);
                 DcOffset = new RegUInt32(_deviceHandler, 0x0518, REGPRIVATE.READWRITE);
                 CwOffTime = new RegUInt32(_deviceHandler, 0x051c, REGPRIVATE.READWRITE);
                 SjcControl = new Regbyte(_deviceHandler, 0x0600, REGPRIVATE.READWRITE);
@@ -782,8 +1145,8 @@ namespace CSLibrary
                 SjcResultI = new RegUInt32(_deviceHandler, 0x0614, REGPRIVATE.READONLY);
                 SjcResultQ = new RegUInt32(_deviceHandler, 0x0618, REGPRIVATE.READONLY);
                 AnalogEnable = new RegUInt32(_deviceHandler, 0x0700, REGPRIVATE.READWRITE);
-                InventoryRoundControl = new RegInventoryRoundControl(_deviceHandler);
-                InventoryRoundControl_2 = new RegUInt32(_deviceHandler, 0x1004, REGPRIVATE.READWRITE);
+                //InventoryRoundControl = new RegInventoryRoundControl(_deviceHandler); // for E710 only
+                //InventoryRoundControl_2 = new RegUInt32(_deviceHandler, 0x1004, REGPRIVATE.READWRITE); // for E710 only
                 NominalStopTime = new RegUInt16(_deviceHandler, 0x1008, REGPRIVATE.READWRITE);
                 ExtendedStopTime = new RegUInt16(_deviceHandler, 0x100c, REGPRIVATE.READWRITE);
                 RegulatoryStopTime = new RegUInt16(_deviceHandler, 0x1010, REGPRIVATE.READWRITE);

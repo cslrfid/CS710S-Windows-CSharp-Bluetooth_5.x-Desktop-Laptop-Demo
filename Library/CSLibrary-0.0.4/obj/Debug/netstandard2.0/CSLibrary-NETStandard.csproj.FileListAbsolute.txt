@@ -1,0 +1,10 @@
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\bin\Debug\netstandard2.0\CSLibrary.deps.json
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\bin\Debug\netstandard2.0\CSLibrary.dll
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\bin\Debug\netstandard2.0\CSLibrary.pdb
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\obj\Debug\netstandard2.0\CSLibrary-NETStandard.csproj.AssemblyReference.cache
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\obj\Debug\netstandard2.0\CSLibrary-NETStandard.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\obj\Debug\netstandard2.0\CSLibrary-NETStandard.AssemblyInfoInputs.cache
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\obj\Debug\netstandard2.0\CSLibrary-NETStandard.AssemblyInfo.cs
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\obj\Debug\netstandard2.0\CSLibrary-NETStandard.csproj.CoreCompileInputs.cache
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\obj\Debug\netstandard2.0\CSLibrary.dll
+C:\Projects\GitHub\CS710S-Mobile-CSharp-DotNetStd-App\Library\CSLibrary\obj\Debug\netstandard2.0\CSLibrary.pdb

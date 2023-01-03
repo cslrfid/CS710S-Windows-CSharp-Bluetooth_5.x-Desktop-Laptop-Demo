@@ -548,9 +548,25 @@ namespace CSLibrary
                     break;
 
                 case 0xC4: // Kill
+                    {
+                        FireAccessCompletedEvent(
+                        new CSLibrary.Events.OnAccessCompletedEventArgs(
+                        (tagErrorCode == 0x10 && macErrorCode == 0x00),
+                            Bank.UNKNOWN,
+                            TagAccess.KILL,
+                            null));
+                    }
                     break;
 
                 case 0xC5: // Lock
+                    {
+                        FireAccessCompletedEvent(
+                        new CSLibrary.Events.OnAccessCompletedEventArgs(
+                        (tagErrorCode == 0x10 && macErrorCode == 0x00),
+                            Bank.UNKNOWN,
+                            TagAccess.LOCK,
+                            null));
+                    }
                     break;
 
                 case 0xC6: // Access

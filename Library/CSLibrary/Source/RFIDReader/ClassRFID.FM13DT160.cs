@@ -236,7 +236,7 @@ namespace CSLibrary
 
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_STARTADDRPAR, (uint)Options.ReadMemory.offset);
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_READWRITELENPAR, (uint)Options.ReadMemory.count);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTREADMEMORY), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_READMEMORY);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTREADMEMORY), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_READMEMORY);
 
 			return true;
 		}
@@ -265,7 +265,7 @@ namespace CSLibrary
 				return false;
 
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_REGADDRPAR, (uint)Options.ReadRegister.address);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTREADREG), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_READREGISTER);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTREADREG), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_READREGISTER);
 			return true;
 		}
 
@@ -276,7 +276,7 @@ namespace CSLibrary
 
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_REGADDRPAR, (uint)Options.WriteRegister.address);
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_WRITEPAR, (uint)Options.WriteRegister.value);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTWRITEREG), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_WRITEREGISTER);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTWRITEREG), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_WRITEREGISTER);
 			return true;
 		}
 
@@ -285,7 +285,7 @@ namespace CSLibrary
 //			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_CMDCFGPAR, (uint)mode);
 //			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_PWDPAR, password);
 
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTAUTH), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_AUTH);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTAUTH), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_AUTH);
 			return true;
 		}
 
@@ -293,7 +293,7 @@ namespace CSLibrary
 		{
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_CMDCFGPAR, Options.GetTemp.cmd_cfg);
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_STOBLOCKADDPAR, Options.GetTemp.ewblock_addr);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTGETTEMP), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_GETTEMP);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTGETTEMP), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_GETTEMP);
 			return true;
 		}
 		private bool FM13DTStartLogThreadProc()
@@ -308,13 +308,13 @@ namespace CSLibrary
 		{
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_CMDCFGPAR, 0x50);
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_PWDPAR, Options.StopLog.password);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTSTOPLOG), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_STOPLOG);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTSTOPLOG), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_STOPLOG);
 			return true;
 		}
 		private bool FM13DTDeepSleepThreadProc()
 		{
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_CMDCFGPAR, 1U);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTDEEPSLEEP), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_DEEPSLEEP);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTDEEPSLEEP), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_DEEPSLEEP);
 			return true;
 		}
 		private bool FM13DTOpModeChkThreadProc()
@@ -325,14 +325,14 @@ namespace CSLibrary
 				value = 0x01;
 
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.FM13DT160_CMDCFGPAR, value);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTOPMODECHK), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_DATA1, (uint)CSLibrary.Constants.Operation.FM13DT_OPMODECHK);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTOPMODECHK), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_DATA1, (uint)CSLibrary.Constants.Operation.FM13DT_OPMODECHK);
 
 			return true;
 		}
 
 		private bool FM13DTInitialRegFileThreadProc()
 		{
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTINITIALREGFILE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_INITIALREGFILE);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMMFM13DTINITIALREGFILE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.FM13DT_INITIALREGFILE);
 			return true;
 		}
 

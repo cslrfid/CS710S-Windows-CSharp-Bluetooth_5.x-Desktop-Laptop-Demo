@@ -50,57 +50,6 @@ namespace CSLibrary
                     RFIDRegister.SelectConfiguration.Set(0, true, (byte)m_rdr_opt_parms.TagSelected.bank, m_rdr_opt_parms.TagSelected.epcMaskOffset, (byte)m_rdr_opt_parms.TagSelected.epcMaskLength, m_rdr_opt_parms.TagSelected.Mask.ToArray(), (byte)CSLibrary.Constants.Target.SELECTED, 0, 0);
                 }
 
-
-                /*
-
-                                UInt32 value = 0;
-
-                                MacReadRegister(MACREGISTER.HST_TAGACC_DESC_CFG, ref value);
-                                value |= 0x0001U; // Enable Verify after write
-                                MacWriteRegister(MACREGISTER.HST_TAGACC_DESC_CFG, value);
-
-                                MacReadRegister(MACREGISTER.HST_QUERY_CFG, ref value);
-                                value &= ~0x0200U; // Enable Ucode Parallel encoding
-                                MacWriteRegister(MACREGISTER.HST_QUERY_CFG, value);
-
-                                SetOperationMode(CSLibrary.Constants.RadioOperationMode.NONCONTINUOUS);
-                                SetTagGroup(CSLibrary.Constants.Selected.ASSERTED, CSLibrary.Constants.Session.S0, CSLibrary.Constants.SessionTarget.A);
-                                SetSingulationAlgorithmParms(CSLibrary.Constants.SingulationAlgorithm.FIXEDQ, new CSLibrary.Structures.FixedQParms
-                                    (
-                                    m_rdr_opt_parms.TagSelected.Qvalue,//QValue
-                                    0x5, //Retry
-                                    (uint)((m_rdr_opt_parms.TagSelected.flags & CSLibrary.Constants.SelectMaskFlags.ENABLE_TOGGLE) == CSLibrary.Constants.SelectMaskFlags.ENABLE_TOGGLE ? 1 : 0),//toggle
-                                    0)//repeatUntilNoUnit
-                                    );
-
-                                CSLibrary.Structures.SelectCriterion[] sel = new CSLibrary.Structures.SelectCriterion[1];
-                                sel[0] = new CSLibrary.Structures.SelectCriterion();
-                                sel[0].action = new CSLibrary.Structures.SelectAction(CSLibrary.Constants.Target.SELECTED,
-                                    (m_rdr_opt_parms.TagSelected.flags & CSLibrary.Constants.SelectMaskFlags.ENABLE_NON_MATCH) == CSLibrary.Constants.SelectMaskFlags.ENABLE_NON_MATCH ?
-                                    CSLibrary.Constants.Action.DSLINVB_ASLINVA : CSLibrary.Constants.Action.ASLINVA_DSLINVB, 0);
-
-
-                                if (m_rdr_opt_parms.TagSelected.bank == CSLibrary.Constants.MemoryBank.EPC)
-                                {
-                                    sel[0].mask = new CSLibrary.Structures.SelectMask(
-                                        m_rdr_opt_parms.TagSelected.bank,
-                                        (uint)((m_rdr_opt_parms.TagSelected.flags & CSLibrary.Constants.SelectMaskFlags.ENABLE_PC_MASK) == CSLibrary.Constants.SelectMaskFlags.ENABLE_PC_MASK ? 16 : 32 + m_rdr_opt_parms.TagSelected.epcMaskOffset),
-                                        m_rdr_opt_parms.TagSelected.epcMaskLength,
-                                        m_rdr_opt_parms.TagSelected.epcMask.ToBytes());
-                                }
-                                else
-                                {
-                                    sel[0].mask = new CSLibrary.Structures.SelectMask(
-                                        m_rdr_opt_parms.TagSelected.bank,
-                                        m_rdr_opt_parms.TagSelected.MaskOffset,
-                                        m_rdr_opt_parms.TagSelected.MaskLength,
-                                        m_rdr_opt_parms.TagSelected.Mask);
-                                }
-                                if ((m_Result = SetSelectCriteria(sel)) != CSLibrary.Constants.Result.OK)
-                                {
-                                    //goto EXIT;
-                                }
-                */
             }
             catch (System.Exception ex)
             {
@@ -134,7 +83,6 @@ namespace CSLibrary
 
                     param.startQValue = m_rdr_opt_parms.TagSelected.Qvalue;
                     param.toggleTarget = (uint)((m_rdr_opt_parms.TagSelected.flags & CSLibrary.Constants.SelectMaskFlags.ENABLE_TOGGLE) == CSLibrary.Constants.SelectMaskFlags.ENABLE_TOGGLE ? 1 : 0);
-                    param.retryCount = 0x05;
 
                     SetSingulationAlgorithmParms(CSLibrary.Constants.SingulationAlgorithm.DYNAMICQ, param);
                 }
@@ -203,6 +151,35 @@ namespace CSLibrary
         {
             try
             {
+                _tagSelectedParms = (Structures.TagSelectedParms)m_rdr_opt_parms.TagSelected.Clone();
+
+                if (m_rdr_opt_parms.TagSelected.bank == Constants.MemoryBank.EPC)
+                {
+                    byte[] a = m_rdr_opt_parms.TagSelected.epcMask.ToBytes();
+
+                    RFIDRegister.SelectConfiguration.Set(0, true, (byte)m_rdr_opt_parms.TagSelected.bank, (uint)((m_rdr_opt_parms.TagSelected.flags & CSLibrary.Constants.SelectMaskFlags.ENABLE_PC_MASK) == CSLibrary.Constants.SelectMaskFlags.ENABLE_PC_MASK ? 16 : 32 + m_rdr_opt_parms.TagSelected.epcMaskOffset), (byte)m_rdr_opt_parms.TagSelected.epcMaskLength, m_rdr_opt_parms.TagSelected.epcMask.ToBytes(), (byte)CSLibrary.Constants.Target.SELECTED, 0, 0);
+                }
+                else
+                {
+                    byte[] a = m_rdr_opt_parms.TagSelected.Mask.ToArray();
+
+                    RFIDRegister.SelectConfiguration.Set(0, true, (byte)m_rdr_opt_parms.TagSelected.bank, m_rdr_opt_parms.TagSelected.epcMaskOffset, (byte)m_rdr_opt_parms.TagSelected.epcMaskLength, m_rdr_opt_parms.TagSelected.Mask.ToArray(), (byte)CSLibrary.Constants.Target.SELECTED, 0, 0);
+                }
+
+            }
+            catch (System.Exception ex)
+            {
+#if DEBUG
+                //CSLibrary.Diagnostics.CoreDebug.Logger.ErrorException("HighLevelInterface.TagSelected()", ex);
+#endif
+                m_Result = CSLibrary.Constants.Result.SYSTEM_CATCH_EXCEPTION;
+            }
+
+
+/*
+
+            try
+            {
                 UInt32 value = 0;
 
                 MacReadRegister(MACREGISTER.HST_TAGACC_DESC_CFG, ref value);
@@ -250,6 +227,7 @@ namespace CSLibrary
 #endif
                 m_Result = CSLibrary.Constants.Result.SYSTEM_CATCH_EXCEPTION;
             }
+*/
         }
 
         private void SetMaskThreadProc()

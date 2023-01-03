@@ -702,8 +702,6 @@ namespace CSLibrary
             Debug.WriteLine("{0:X4} : 0x3008, {1:X2}, {2:X2}", UTCTimeStamp, commandCode, success);
 
 
-
-
                     }
 
                     // 0x1471
@@ -788,6 +786,7 @@ namespace CSLibrary
 
                                 case 0x3008:
                                     csl_operation_complete_packet_proc(recvData, index);
+                                    result = HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.CSL_OPERATION_COMPLETE;
                                     break;
 
                                 case 0x3009:
@@ -807,6 +806,18 @@ namespace CSLibrary
                             {
                                 case 0x1471:
                                     ReadRegister_packet_proc(recvData, index);
+                                    break;
+
+                                case 0x10b1: // read tag
+                                    result = HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.ENDEVENTUPLINKPACKET;
+                                    break;
+
+                                case 0x10b7: // read tag
+                                    result = HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.ENDEVENTUPLINKPACKET;
+                                    break;
+
+                                case 0x9a06: // write registers
+                                    result = HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.COMMANDENDRESPONSE;
                                     break;
                             }
                         }
@@ -1002,9 +1013,13 @@ namespace CSLibrary
 
         public Result CancelAllSelectCriteria()
         {
+            return Result.OK;
+            if (RFIDRegister == null)
+                return Result.FAILURE;
+
             for (uint cnt = 0; cnt < 7; cnt++)
             {
-                SetSelectCriteria(cnt, null);
+                RFIDRegister.SelectConfiguration.Set(cnt, false);
             }
 
             return Result.OK;
@@ -1412,8 +1427,8 @@ namespace CSLibrary
 		{
             MacRegisterInitialize();
 
-            RFIDRegister.EventPacketUplinkEnable.Set(0x09);
-            RFIDRegister.DuplicateEliminationRollingWindow.Set(12);
+            RFIDRegister.EventPacketUplinkEnable.Set(0x0D);
+            //RFIDRegister.EventPacketUplinkEnable.Set(0x09);
 
             //ReadReaderOEMData();
         }

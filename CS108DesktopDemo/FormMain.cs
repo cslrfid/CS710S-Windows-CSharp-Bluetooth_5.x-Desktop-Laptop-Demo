@@ -64,6 +64,7 @@ namespace CS108DesktopDemo
         private void button3_Click(object sender, EventArgs e)
         {
             _reader.rfid.OnAsyncCallback += new EventHandler<CSLibrary.Events.OnAsyncCallbackEventArgs>(TagInventoryEvent);
+            //_reader.rfid.SetPowerLevel(150); // Set Power to 15dB for testing
             _reader.rfid.Options.TagRanging.flags = 0;
             _reader.rfid.StartOperation(CSLibrary.Constants.Operation.TAG_RANGING);
         }

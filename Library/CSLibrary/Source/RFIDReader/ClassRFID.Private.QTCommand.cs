@@ -33,7 +33,7 @@ namespace CSLibrary
 
                 //                m_pMac->WriteRegister(HST_CMD, CMD_CUSTOM_M4QT);
                 //COMM_HostCommand(HST_CMD.CUSTOMM4QT);
-                _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.CUSTOMM4QT), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)0xffffffff);
+                //_deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.CUSTOMM4QT), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)0xffffffff);
             }
             catch (System.Exception ex)
             {

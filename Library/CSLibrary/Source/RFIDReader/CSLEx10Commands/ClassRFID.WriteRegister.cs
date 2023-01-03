@@ -28,33 +28,6 @@ namespace CSLibrary
     {
         byte _sequencedNumber = 0;
 
-        /*        internal void WriteRegister(READREGISTERSET[] readset)
-                {
-                    SCSLRFIDCMD cmd = SCSLRFIDCMD.SCSLWriteRegister;
-                    byte[] payload = new byte[8 + readset.Length * 3];
-                    int index;
-
-                    payload[0] = 0x80;
-                    payload[1] = 0xb3;
-                    payload[2] = (byte)((int)cmd >> 8);
-                    payload[3] = (byte)cmd;
-                    payload[4] = 0x00; 
-                    payload[5] = (byte)(payload.Length >> 8);
-                    payload[6] = (byte)(payload.Length);
-                    payload[7] = (byte)readset.Length;
-
-                    index = 8;
-                    for (int cnt = 0; cnt < readset.Length; cnt++)
-                    {
-                        payload[index++] = (byte)(readset[cnt].address >> 8);
-                        payload[index++] = (byte)(readset[cnt].address);
-                        payload[index++] = (byte)(readset[cnt].size);
-                    }
-
-                    _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, payload, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_DATA1);
-                }
-        */
-
         public void WriteRegister(UInt16 address, byte value)
         {
             byte[] data = new byte[1];
@@ -104,6 +77,9 @@ namespace CSLibrary
 
         public void WriteRegister(UInt16 address, byte[] data)
         {
+            if (data == null)
+                return;
+
             SCSLRFIDCMD cmd = SCSLRFIDCMD.SCSLWriteRegister;
             byte[] payload = new byte[11 + data.Length];
             int datapayloadlen = 4 + data.Length;
@@ -121,11 +97,14 @@ namespace CSLibrary
             payload[10] = (byte)data.Length;
             Array.Copy(data, 0, payload, 11, data.Length);
 
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, payload, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE);
+            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, payload, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.COMMANDENDRESPONSE);
         }
 
         internal bool WriteRegisterCommandReply(int index, byte[] data)
         {
+            if (data == null)
+                return false;
+
             if (data.Length < index + 7)
                 return false;
 

@@ -54,17 +54,13 @@ namespace CSLibrary
             BTAPIRESPONSE = 1,
             COMMANDENDRESPONSE = 2,
             DATA1 = 4,
-            DATA2 = 8,
-            REGISTERRETURN = 16,
-            ABORTRESPONSE = 32,
             TAGACCESSPACKET = 64,
+            ENDEVENTUPLINKPACKET = 128,
+            CSL_OPERATION_COMPLETE = 256,
+            CSL_ACCESS_COMPLETE = 512,
 
             WAIT_BTAPIRESPONSE = BTAPIRESPONSE,
-            WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE = BTAPIRESPONSE | COMMANDENDRESPONSE,
             WAIT_BTAPIRESPONSE_DATA1 = BTAPIRESPONSE | DATA1,
-            WAIT_BTAPIRESPONSE_DATA2 = BTAPIRESPONSE | DATA2,
-            WAIT_BTAPIRESPONSE_DATA1_COMMANDENDRESPONSE = BTAPIRESPONSE | DATA1 | COMMANDENDRESPONSE,
-            WAIT_BTAPIRESPONSE_DATA2_COMMANDENDRESPONSE = BTAPIRESPONSE | DATA2 | COMMANDENDRESPONSE,
         }
 
         internal class SENDBUFFER
@@ -92,108 +88,122 @@ namespace CSLibrary
 
         internal bool SendAsync(int connection, int destination, byte[] eventCode = null, byte[] payload = null, BTWAITCOMMANDRESPONSETYPE sendRemark = BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE, UInt32 cmdRemark = 0xffffffff)
         {
-            byte[] sendData;
-
-            if (eventCode == null && payload == null)
+            try
             {
-                sendData = new byte[8];
+                byte[] sendData;
 
+                if (eventCode == null && payload == null)
+                {
+                    sendData = new byte[8];
+
+                    sendData[6] = 0x00;
+                    sendData[7] = 0x00;
+                }
+                else if (payload == null)
+                {
+                    if (eventCode.Length > (255 - 8))
+                        return false;
+
+                    sendData = new byte[8 + eventCode.Length];
+
+                    Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
+
+                    sendData[2] = (byte)eventCode.Length;
+                }
+                else
+                {
+                    if ((eventCode.Length + payload.Length) > (255 - 8))
+                        return false;
+
+                    sendData = new byte[8 + eventCode.Length + payload.Length];
+
+                    Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
+                    Array.Copy(payload, 0, sendData, 8 + eventCode.Length, payload.Length);
+
+                    sendData[2] = (byte)(eventCode.Length + payload.Length);
+                }
+
+                sendData[0] = 0xa7;
+                sendData[1] = (byte)((connection == 0) ? 0xb3 : 0xe6);
+                sendData[3] = destinationsID[destination];
+                sendData[4] = 0x82;
+                sendData[5] = 0x37; // downlink
                 sendData[6] = 0x00;
                 sendData[7] = 0x00;
+
+                SENDBUFFER sendItem = new SENDBUFFER();
+                sendItem.packetData = sendData;
+                sendItem.cmdRemark = cmdRemark;
+                sendItem.dataRemark = sendRemark;
+
+                _sendBuffer.Add(sendItem);
+                BLERWEngineTimer();
             }
-            else if (payload == null)
+            catch (Exception ex)
             {
-                if (eventCode.Length > (255 - 8))
-                    return false;
-
-                sendData = new byte[8 + eventCode.Length];
-
-                Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
-
-                sendData[2] = (byte)eventCode.Length;
+                CSLibrary.Debug.WriteLine("SendAsync exception : " + ex.Message);
             }
-            else
-            {
-                if ((eventCode.Length + payload.Length) > (255 - 8))
-                    return false;
-
-                sendData = new byte[8 + eventCode.Length + payload.Length];
-
-                Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
-                Array.Copy(payload, 0, sendData, 8 + eventCode.Length, payload.Length);
-
-                sendData[2] = (byte)(eventCode.Length + payload.Length);
-            }
-
-            sendData[0] = 0xa7;
-            sendData[1] = (byte)((connection == 0) ? 0xb3 : 0xe6);
-            sendData[3] = destinationsID[destination];
-            sendData[4] = 0x82;
-            sendData[5] = 0x37; // downlink
-            sendData[6] = 0x00;
-            sendData[7] = 0x00;
-
-            SENDBUFFER sendItem = new SENDBUFFER();
-            sendItem.packetData = sendData;
-            sendItem.cmdRemark = cmdRemark;
-            sendItem.dataRemark = sendRemark;
-
-            _sendBuffer.Add(sendItem);
-            BLERWEngineTimer();
 
             return true;
         }
 
         internal bool SendAsyncUrgent(int connection, int destination, byte[] eventCode = null, byte[] payload = null, BTWAITCOMMANDRESPONSETYPE sendRemark = BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE, UInt32 cmdRemark = 0xffffffff)
         {
-            byte[] sendData;
-
-            if (eventCode == null && payload == null)
+            try
             {
-                sendData = new byte[8];
+                byte[] sendData;
 
+                if (eventCode == null && payload == null)
+                {
+                    sendData = new byte[8];
+
+                    sendData[6] = 0x00;
+                    sendData[7] = 0x00;
+                }
+                else if (payload == null)
+                {
+                    if (eventCode.Length > (255 - 8))
+                        return false;
+
+                    sendData = new byte[8 + eventCode.Length];
+
+                    Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
+
+                    sendData[2] = (byte)eventCode.Length;
+                }
+                else
+                {
+                    if ((eventCode.Length + payload.Length) > (255 - 8))
+                        return false;
+
+                    sendData = new byte[8 + eventCode.Length + payload.Length];
+
+                    Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
+                    Array.Copy(payload, 0, sendData, 8 + eventCode.Length, payload.Length);
+
+                    sendData[2] = (byte)(eventCode.Length + payload.Length);
+                }
+
+                sendData[0] = 0xa7;
+                sendData[1] = (byte)((connection == 0) ? 0xb3 : 0xe6);
+                sendData[3] = destinationsID[destination];
+                sendData[4] = 0x82;
+                sendData[5] = 0x37; // downlink
                 sendData[6] = 0x00;
                 sendData[7] = 0x00;
+
+                SENDBUFFER sendItem = new SENDBUFFER();
+                sendItem.packetData = sendData;
+                sendItem.cmdRemark = cmdRemark;
+                sendItem.dataRemark = sendRemark;
+
+                _sendBuffer.Insert(1, sendItem);
+                BLERWEngineTimer();
             }
-            else if (payload == null)
+            catch (Exception ex)
             {
-                if (eventCode.Length > (255 - 8))
-                    return false;
-
-                sendData = new byte[8 + eventCode.Length];
-
-                Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
-
-                sendData[2] = (byte)eventCode.Length;
+                CSLibrary.Debug.WriteLine("SendAsyncUrgent exception : " + ex.Message);
             }
-            else
-            {
-                if ((eventCode.Length + payload.Length) > (255 - 8))
-                    return false;
-
-                sendData = new byte[8 + eventCode.Length + payload.Length];
-
-                Array.Copy(eventCode, 0, sendData, 8, eventCode.Length);
-                Array.Copy(payload, 0, sendData, 8 + eventCode.Length, payload.Length);
-
-                sendData[2] = (byte)(eventCode.Length + payload.Length);
-            }
-
-            sendData[0] = 0xa7;
-            sendData[1] = (byte)((connection == 0) ? 0xb3 : 0xe6);
-            sendData[3] = destinationsID[destination];
-            sendData[4] = 0x82;
-            sendData[5] = 0x37; // downlink
-            sendData[6] = 0x00;
-            sendData[7] = 0x00;
-
-            SENDBUFFER sendItem = new SENDBUFFER();
-            sendItem.packetData = sendData;
-            sendItem.cmdRemark = cmdRemark;
-            sendItem.dataRemark = sendRemark;
-
-            _sendBuffer.Insert(1, sendItem);
-            BLERWEngineTimer();
 
             return true;
         }
@@ -275,15 +285,6 @@ namespace CSLibrary
 
             _handlerRFIDReader._readerMode = 1; // record reader static to command mode
 
-            if (_sendBuffer[0].packetData[14] == 0x14 && _sendBuffer[0].packetData[15] == 0x00 && _sendBuffer[0].packetData[16] == 0x00 && _sendBuffer[0].packetData[17] == 0x00)
-            {
-                _handlerRFIDReader._SetRFIDToStandbyMode = false;
-            }
-            else
-            {
-                _handlerRFIDReader._SetRFIDToStandbyMode = true;
-            }
-
             return true;
         }
 
@@ -295,125 +296,132 @@ namespace CSLibrary
 
             lock (_bleEngineLock)
             {
-                if (_readerState != READERSTATE.DISCONNECT)
+                try
                 {
-                    if (_NeedCommandResponseType != BTWAITCOMMANDRESPONSETYPE.NOWAIT)
+                    if (_readerState != READERSTATE.DISCONNECT)
                     {
-                        CSLibrary.Debug.WriteLine("wait response : " + _NeedCommandResponseType.ToString() + ":" + _currentCommandResponse);
-                        if ((_currentCommandResponse & _NeedCommandResponseType) == _NeedCommandResponseType)
+                        if (_NeedCommandResponseType != BTWAITCOMMANDRESPONSETYPE.NOWAIT)
                         {
-                            if (_sendBuffer.Count > 0)
-                                _sendBuffer.RemoveAt(0);
-
-                            _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
-                            _PROTOCOL_RetryCount = 0;
-                        }
-                        else if (DateTime.Now > _packetResponseTimeout)
-                        {
-                            switch (_sendBuffer[0].type)
+                            CSLibrary.Debug.WriteLine("wait response : " + _NeedCommandResponseType.ToString() + ":" + _currentCommandResponse);
+                            if ((_currentCommandResponse & _NeedCommandResponseType) == _NeedCommandResponseType)
                             {
-                                case BTCOMMANDTYPE.None:
-                                case BTCOMMANDTYPE.Normal:
-                                    if (_PROTOCOL_RetryCount > 19) // retry 19 times (~40s)
-                                    {
-                                        // cancel all command and send error event
+                                if (_sendBuffer.Count > 0)
+                                    _sendBuffer.RemoveAt(0);
 
-                                        CSLibrary.Debug.WriteLine("Communication retry fail!!");
-                                        _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
-                                        FireReaderStateChangedEvent(new Events.OnReaderStateChangedEventArgs(_sendBuffer[0], Constants.ReaderCallbackType.COMMUNICATION_ERROR));
-                                        _sendBuffer.Clear();
-                                        _PROTOCOL_RetryCount = 0;
-                                    }
-                                    else
-                                    {
-                                        _PROTOCOL_RetryCount++;
-                                        CSLibrary.Debug.WriteLine("Command timeout");
-                                        _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
-                                    }
-                                    break;
-
-                                case BTCOMMANDTYPE.Validate:
-                                    if (_PROTOCOL_RetryCount > 0) // retry 1 times
-                                    {
-                                        // cancel all command and send error event
-
-                                        CSLibrary.Debug.WriteLine("hardware fail!!");
-
-                                        if (_sendBuffer[0].sendFailCallback != null)
-                                            _sendBuffer[0].sendFailCallback();
-                                        _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
-                                        _sendBuffer.RemoveAt(0);
-                                        _PROTOCOL_RetryCount = 0;
-                                    }
-                                    else
-                                    {
-                                        _PROTOCOL_RetryCount++;
-                                        CSLibrary.Debug.WriteLine("Hardware vaildate command timeout");
-                                        _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
-                                    }
-                                    break;
-
+                                _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
+                                _PROTOCOL_RetryCount = 0;
                             }
-
-                        }
-                    }
-
-                    if (_NeedCommandResponseType == BTWAITCOMMANDRESPONSETYPE.NOWAIT)
-                    {
-                        if (_sendBuffer.Count > 0 && DateTime.Now > _packetDelayTimeout)
-                        {
-                            _currentCommandResponse = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
-                            _currentCmdRemark = _sendBuffer[0].cmdRemark;
-                            _NeedCommandResponseType = _sendBuffer[0].dataRemark;
-                            CheckRFIDCommand();
-                            BLE_Send(_sendBuffer[0].packetData);
-                            
-                            if (_NeedCommandResponseType == BTWAITCOMMANDRESPONSETYPE.NOWAIT)
+                            else if (DateTime.Now > _packetResponseTimeout)
                             {
-                                _sendBuffer.RemoveAt(0);
-                            }
-                            else
-                            {
-                                _packetDelayTimeout = DateTime.Now;
-                                _packetResponseTimeout = DateTime.Now.AddSeconds(2);
-
-                                if (_currentCommandResponse == BTWAITCOMMANDRESPONSETYPE.NOWAIT)
+                                switch (_sendBuffer[0].type)
                                 {
-                                    if (_sendBuffer[0].packetData[2] == 0x02 && _sendBuffer[0].packetData[9] == 0x00)
-                                    {
-                                        switch (_sendBuffer[0].packetData[8])
+                                    case BTCOMMANDTYPE.None:
+                                    case BTCOMMANDTYPE.Normal:
+                                        if (_PROTOCOL_RetryCount > 19) // retry 19 times (~40s)
                                         {
-                                            case 0x80:
-                                                _packetDelayTimeout = DateTime.Now.AddSeconds(3);
-                                                break;
+                                            // cancel all command and send error event
 
-                                            case 0x90:
-                                                //_packetDelayTimeout = DateTime.Now.AddSeconds(1);
-                                                break;
+                                            CSLibrary.Debug.WriteLine("Communication retry fail!!");
+                                            _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
+                                            FireReaderStateChangedEvent(new Events.OnReaderStateChangedEventArgs(_sendBuffer[0], Constants.ReaderCallbackType.COMMUNICATION_ERROR));
+                                            _sendBuffer.Clear();
+                                            _PROTOCOL_RetryCount = 0;
                                         }
-                                    } // barcode command delay
-                                    else if (_sendBuffer[0].packetData[8] == 0x90 && _sendBuffer[0].packetData[9] == 0x03)
-                                    {
-                                        _packetDelayTimeout = DateTime.Now.AddMilliseconds(500);
-                                    }
+                                        else
+                                        {
+                                            _PROTOCOL_RetryCount++;
+                                            CSLibrary.Debug.WriteLine("Command timeout");
+                                            _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
+                                        }
+                                        break;
+
+                                    case BTCOMMANDTYPE.Validate:
+                                        if (_PROTOCOL_RetryCount > 0) // retry 1 times
+                                        {
+                                            // cancel all command and send error event
+
+                                            CSLibrary.Debug.WriteLine("hardware fail!!");
+
+                                            if (_sendBuffer[0].sendFailCallback != null)
+                                                _sendBuffer[0].sendFailCallback();
+                                            _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
+                                            _sendBuffer.RemoveAt(0);
+                                            _PROTOCOL_RetryCount = 0;
+                                        }
+                                        else
+                                        {
+                                            _PROTOCOL_RetryCount++;
+                                            CSLibrary.Debug.WriteLine("Hardware vaildate command timeout");
+                                            _NeedCommandResponseType = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
+                                        }
+                                        break;
+
                                 }
 
-                                CSLibrary.Debug.WriteBytes("BT send data (" + _sendBuffer[0].dataRemark.ToString() + ")", _sendBuffer[0].packetData);
                             }
+                        }
 
+                        if (_NeedCommandResponseType == BTWAITCOMMANDRESPONSETYPE.NOWAIT)
+                        {
+                            if (_sendBuffer.Count > 0 && DateTime.Now > _packetDelayTimeout)
+                            {
+                                _currentCommandResponse = BTWAITCOMMANDRESPONSETYPE.NOWAIT;
+                                _currentCmdRemark = _sendBuffer[0].cmdRemark;
+                                _NeedCommandResponseType = _sendBuffer[0].dataRemark;
+                                CheckRFIDCommand();
+                                BLE_Send(_sendBuffer[0].packetData);
+
+                                if (_NeedCommandResponseType == BTWAITCOMMANDRESPONSETYPE.NOWAIT)
+                                {
+                                    _sendBuffer.RemoveAt(0);
+                                }
+                                else
+                                {
+                                    _packetDelayTimeout = DateTime.Now;
+                                    _packetResponseTimeout = DateTime.Now.AddSeconds(2);
+
+                                    if (_currentCommandResponse == BTWAITCOMMANDRESPONSETYPE.NOWAIT)
+                                    {
+                                        if (_sendBuffer[0].packetData[2] == 0x02 && _sendBuffer[0].packetData[9] == 0x00)
+                                        {
+                                            switch (_sendBuffer[0].packetData[8])
+                                            {
+                                                case 0x80:
+                                                    _packetDelayTimeout = DateTime.Now.AddSeconds(3);
+                                                    break;
+
+                                                case 0x90:
+                                                    //_packetDelayTimeout = DateTime.Now.AddSeconds(1);
+                                                    break;
+                                            }
+                                        } // barcode command delay
+                                        else if (_sendBuffer[0].packetData[8] == 0x90 && _sendBuffer[0].packetData[9] == 0x03)
+                                        {
+                                            _packetDelayTimeout = DateTime.Now.AddMilliseconds(500);
+                                        }
+                                    }
+
+                                    CSLibrary.Debug.WriteBytes("BT send data (" + _sendBuffer[0].dataRemark.ToString() + ")", _sendBuffer[0].packetData);
+                                }
+
+                            }
                         }
                     }
+                    else
+                    {
+                        _sendBuffer.Clear();
+                    }
+
+                    if (_sendBuffer.Count == 0)
+                        ExecuteFinishBLETask();
+
+                    // battery routine
+                    //_handleBattery.Timer();
                 }
-                else
+                catch (Exception ex)
                 {
-                    _sendBuffer.Clear();
+                    CSLibrary.Debug.WriteLine("BLERWEngineTimer exception : " + ex.Message);
                 }
-
-                if (_sendBuffer.Count == 0)
-                    ExecuteFinishBLETask();
-
-                // battery routine
-                //_handleBattery.Timer();
             }
         }
 

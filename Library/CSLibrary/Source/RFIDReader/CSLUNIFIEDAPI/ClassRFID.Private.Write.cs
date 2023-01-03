@@ -41,6 +41,8 @@ namespace CSLibrary
             RFIDRegister.MultibankWriteConfig.Set(0, true, (byte)WriteBank, 0, (byte)WriteSize, baWriteBuf);
 
 
+            return;
+
             // Set up the tag bank register (tells where to write the data)
 //            MacWriteRegister(MACREGISTER.HST_TAGACC_BANK, (uint)WriteBank);
 
@@ -111,13 +113,9 @@ namespace CSLibrary
             if (count > MAX_WR_CNT)
                 return CSLibrary.Constants.Result.DEVICE_NOT_SUPPORT;       // too many data
 
-
-            MacWriteRegister(MACREGISTER.HST_TAGACC_ACCPWD, password);
-            Start18K6CRequest(1, flags);
-            MacWriteRegister(MACREGISTER.HST_TAGACC_DESC_CFG  /*0xA01*/, (31 << 1) | 0x01); // Enable write verify and set retry count
-                                                                                            //MacWriteRegister(MACREGISTER.HST_TAGACC_DESC_CFG  /*0xA01*/, 0x1ff); // Enable write verify and set retry count
+            RFIDRegister.AccessPassword.Set(password);
             Setup18K6CWriteRegisters(bank, offset, count, data, 0);
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.WRITE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)CurrentOperation);
+            RFIDWriteMB();
 
             return CSLibrary.Constants.Result.OK;
         }
@@ -384,7 +382,7 @@ namespace CSLibrary
                 m_Result = CSLibrary.Constants.Result.FAILURE;
 
                 MacWriteRegister(MACREGISTER.HST_TAGACC_ACCPWD, m_rdr_opt_parms.TagBlockWrite.accessPassword);
-                Start18K6CRequest(1, m_rdr_opt_parms.TagBlockWrite.flags);
+                //Start18K6CRequest(1, m_rdr_opt_parms.TagBlockWrite.flags);
                 MacWriteRegister(MACREGISTER.HST_TAGACC_DESC_CFG, 0x01 | (m_rdr_opt_parms.TagBlockWrite.retryCount << 1)); // Enable write verify and set retry count
 
                 // Set up the tag bank register (tells where to write the data)
@@ -446,7 +444,7 @@ namespace CSLibrary
                     }
                 }
 
-                _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.BLOCKWRITE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)CurrentOperation);
+                //_deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.BLOCKWRITE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)CurrentOperation);
 
                 m_Result = CSLibrary.Constants.Result.OK;
             }

@@ -519,7 +519,7 @@ namespace CSLibrary
 
         #endregion
 
-        void Start18K6CRequest(uint tagStopCount, SelectFlags flags)
+/*        void Start18K6CRequest(uint tagStopCount, SelectFlags flags)
         {
             // Set up the rest of the HST_INV_CFG register.  First, we have to read its
             // current value
@@ -559,6 +559,7 @@ namespace CSLibrary
 
             MacWriteRegister(MACREGISTER.HST_INV_EPC_MATCH_CFG, registerValue);
         } // Radio::Start18K6CRequest
+*/
 
         /*
 				public int CUST_18K6CTagWrite(uint bank, uint offset, uint count, UInt16[] data, uint accessPassword, uint retry, SelectFlags flags)
@@ -892,7 +893,7 @@ namespace CSLibrary
 
             // Perform the common 18K6C tag operation setup
             //this->Start18K6CRequest(&pBWParms->common, flags);
-            Start18K6CRequest(1, Options.TagBlockLock.flags);
+            //Start18K6CRequest(1, Options.TagBlockLock.flags);
 
             // Set the tag access descriptor to the first one just to be safe
             MacWriteRegister(MACREGISTER.HST_TAGACC_DESC_SEL, 0);
@@ -969,7 +970,7 @@ namespace CSLibrary
             }
 
             // Issue the write command to the MAC
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.BLOCKPERMALOCK), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE);
+//            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.BLOCKPERMALOCK), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE);
             //m_Result = COMM_HostCommand(HST_CMD.BLOCKPERMALOCK);
 
 
@@ -997,7 +998,7 @@ namespace CSLibrary
         //   RFID_Radio{Cancel|Aobrt}Operation on another thread or by returning a non-
         //   zero value from the callback function.
         ////////////////////////////////////////////////////////////////////////////////
-        private bool RFID_18K6CTagKill()
+/*        private bool RFID_18K6CTagKill()
         {
             // Perform the common 18K6C tag operation setup
             Start18K6CRequest(1, m_rdr_opt_parms.TagKill.flags);
@@ -1022,6 +1023,7 @@ namespace CSLibrary
 
             return true;
         } // RFID_18K6CTagKill
+*/
 
         private void TagKillThreadProc()
         {
@@ -1030,9 +1032,7 @@ namespace CSLibrary
             m_Result = Result.OK;
             return;
 
-
-
-            ushort[] tmp = new ushort[1];
+/*            ushort[] tmp = new ushort[1];
 
             if (RFID_18K6CTagKill())
             {
@@ -1051,8 +1051,9 @@ namespace CSLibrary
                 }
             }
             //FireAccessCompletedEvent(new OnAccessCompletedEventArgs(m_Result == Result.OK, Bank.UNKNOWN, TagAccess.KILL, null));
-            //FireStateChangedEvent(RFState.IDLE);
+            //FireStateChangedEvent(RFState.IDLE);*/
         }
+
 
         private void TagAuthenticateThreadProc()
         {
@@ -1080,9 +1081,9 @@ namespace CSLibrary
             MacWriteRegister(MACREGISTER.AUTHENTICATE_MSG2, m_data[2]);
             MacWriteRegister(MACREGISTER.AUTHENTICATE_MSG3, m_data[3]);
 
-            Start18K6CRequest(1, CSLibrary.Constants.SelectFlags.SELECT);
+            //Start18K6CRequest(1, CSLibrary.Constants.SelectFlags.SELECT);
 
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.AUTHENTICATE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)CurrentOperation);
+            //_deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.AUTHENTICATE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)CurrentOperation);
             m_Result = Result.OK;
             return;
         }
@@ -1092,9 +1093,9 @@ namespace CSLibrary
             MacWriteRegister(MACREGISTER.READBUFFER_PTR, m_rdr_opt_parms.TagReadBuffer.Offset);
             MacWriteRegister(MACREGISTER.READBUFFER_LEN, (UInt32)(m_rdr_opt_parms.TagReadBuffer.Length & 0xfff));
 
-            Start18K6CRequest(1, CSLibrary.Constants.SelectFlags.SELECT);
+            //Start18K6CRequest(1, CSLibrary.Constants.SelectFlags.SELECT);
 
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.READBUFFER), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE);
+            //_deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.READBUFFER), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE);
             m_Result = Result.OK;
             return;
         }
@@ -1118,10 +1119,10 @@ namespace CSLibrary
 
             MacWriteRegister( MACREGISTER.UNTRACEABLE_CFG, value);
 
-            Start18K6CRequest(1, CSLibrary.Constants.SelectFlags.SELECT);
+            //Start18K6CRequest(1, CSLibrary.Constants.SelectFlags.SELECT);
 
             // Issue the untraceable command
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.UNTRACEABLE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)CurrentOperation);
+            //_deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.UNTRACEABLE), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)CurrentOperation);
             m_Result = Result.OK;
             return;
         }
@@ -1246,7 +1247,7 @@ namespace CSLibrary
             MacWriteRegister(MACREGISTER.HST_OEM_ADDR, address);
 
             // Issue read OEM command
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.RDOEM), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_DATA1_COMMANDENDRESPONSE, (UInt32)0xffffffff);
+            //_deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.RDOEM), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_DATA1_COMMANDENDRESPONSE, (UInt32)0xffffffff);
 
             return Result.OK;
         }
@@ -1256,7 +1257,7 @@ namespace CSLibrary
             MacWriteRegister(MACREGISTER.HST_OEM_ADDR, address);
             MacWriteRegister(MACREGISTER.HST_OEM_DATA, value);
 
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.WROEM), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)0xffffffff);
+            //_deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.WROEM), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (UInt32)0xffffffff);
 
             return Result.OK;
         }

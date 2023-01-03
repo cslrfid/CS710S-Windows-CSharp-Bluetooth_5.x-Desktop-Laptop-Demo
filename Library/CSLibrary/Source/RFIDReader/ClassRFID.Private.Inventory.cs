@@ -234,7 +234,7 @@ namespace CSLibrary
             parms.avgRssi = m_rdr_opt_parms.TagSearchOne.avgRssi;
 
             //                m_Result =  TagSearchOne(parms);
-            Start18K6CRequest(0, CSLibrary.Constants.SelectFlags.SELECT);
+            //Start18K6CRequest(0, CSLibrary.Constants.SelectFlags.SELECT);
 
             _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, PacketData(0xf000, (UInt32)HST_CMD.INV), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE);
 
@@ -257,7 +257,7 @@ namespace CSLibrary
             parms.avgRssi = m_rdr_opt_parms.TagSearchOne.avgRssi;
 
             //                m_Result =  TagSearchOne(parms);
-            Start18K6CRequest(0, CSLibrary.Constants.SelectFlags.SELECT);
+            //Start18K6CRequest(0, CSLibrary.Constants.SelectFlags.SELECT);
         }
 
         private void ExeTagSearchOneTagThreadProc()

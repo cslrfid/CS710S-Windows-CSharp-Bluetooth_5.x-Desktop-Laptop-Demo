@@ -81,7 +81,7 @@ namespace CSLibrary
 				value |= 0x02;
 
 			_deviceHandler.rfid.MacWriteRegister(RFIDReader.MACREGISTER.EM4325_CFG, value);
-			_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMEMGETSENSORDATA), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.EM_GetSensorData);
+			//_deviceHandler.SendAsync(0, 0, RFIDReader.DOWNLINKCMD.RFIDCMD, _deviceHandler.rfid.PacketData(0xf000, (UInt32)RFIDReader.HST_CMD.CUSTOMEMGETSENSORDATA), HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE_COMMANDENDRESPONSE, (uint)CSLibrary.Constants.Operation.EM_GetSensorData);
 		}
 
 		private bool GetSenseDataProc()

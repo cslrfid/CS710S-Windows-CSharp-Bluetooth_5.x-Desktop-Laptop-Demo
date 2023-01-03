@@ -67,12 +67,21 @@ namespace CSLibrary
             return datapacket;
         }
 
-        internal void RunShortOperation(SCSLRFIDCMD cmd)
+/*        internal void RunShortOperation(SCSLRFIDCMD cmd)
         {
             byte[] payload = new byte[3];
 
             byte[] datapacket = RfidCmdpack1(cmd, payload);
-            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, datapacket, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.BTAPIRESPONSE, (uint)CurrentOperation);
+            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, datapacket, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.ENDEVENTUPLINKPACKET, (uint)CurrentOperation);
+        }
+*/
+
+        internal void RunShortOperation(SCSLRFIDCMD cmd, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE responseCode = HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.BTAPIRESPONSE)
+        {
+            byte[] payload = new byte[3];
+
+            byte[] datapacket = RfidCmdpack1(cmd, payload);
+            _deviceHandler.SendAsync(0, 0, DOWNLINKCMD.RFIDCMD, datapacket, responseCode, (uint)CurrentOperation);
         }
 
         internal void RFIDStartSimpleInventory()
@@ -82,6 +91,27 @@ namespace CSLibrary
 
         internal void RFIDStartCompactInventory()
         {
+            //            RFIDRegister.TagCacheStatus.Set(0x01);
+
+
+            // for test only
+            {
+                //                WriteRegister(0x3140, new byte[0x2a]);
+                //                WriteRegister(0x316a, new byte[0x2a]);
+                //                WriteRegister(0x3908, 0x04);
+                //                WriteRegister(0x3900, 0x0a);
+                //                WriteRegister(0x0508, (UInt16)0xcc44);
+                //                WriteRegister(0x3906, (UInt16)0x0d);
+                //WriteRegister(0x3033, (UInt16)0x0bb8);
+                //WriteRegister(0x3031, (UInt16)0x07d0);
+                //WriteRegister(0x303e, (UInt16)0x67);
+                //WriteRegister(0x3035, new byte[9] { 0x00, 0x06, 0x30, 0xf7, 0x00, 00, 00, 08, 0x01 });
+                //WriteRegister(0x3035, 0x00);
+                //WriteRegister(0x3037, 0x80);
+                //WriteRegister(0x3039, (UInt32)0x03);
+            }
+
+
             RunShortOperation(SCSLRFIDCMD.SCSLRFIDStartCompactInventory);
         }
 
@@ -122,17 +152,17 @@ namespace CSLibrary
 
         internal void RFIDStopOperation()
         {
-            RunShortOperation(SCSLRFIDCMD.SCSLRFIDStopOperation);
+            RunShortOperation(SCSLRFIDCMD.SCSLRFIDStopOperation, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.CSL_OPERATION_COMPLETE);
         }
 
         internal void RFIDReadMB()
         {
-            RunShortOperation(SCSLRFIDCMD.SCSLRFIDReadMB);
+            RunShortOperation(SCSLRFIDCMD.SCSLRFIDReadMB, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.CSL_OPERATION_COMPLETE);
         }
 
         internal void RFIDWriteMB()
         {
-            RunShortOperation(SCSLRFIDCMD.SCSLRFIDWriteMB);
+            RunShortOperation(SCSLRFIDCMD.SCSLRFIDWriteMB, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.CSL_OPERATION_COMPLETE);
         }
 
         internal void RFIDWriteMBAny()
@@ -152,12 +182,12 @@ namespace CSLibrary
 
         internal void RFIDLockTag()
         {
-            RunShortOperation(SCSLRFIDCMD.SCSLRFIDLock);
+            RunShortOperation(SCSLRFIDCMD.SCSLRFIDLock, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.CSL_OPERATION_COMPLETE);
         }
 
         internal void RFIDKillTag()
         {
-            RunShortOperation(SCSLRFIDCMD.SCSLRFIDKill);
+            RunShortOperation(SCSLRFIDCMD.SCSLRFIDKill, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.CSL_OPERATION_COMPLETE);
         }
 
         internal void RFIDClearTagCacheTable()
@@ -192,7 +222,7 @@ namespace CSLibrary
 
         internal void RFIDWriteRegister()
         {
-            RunShortOperation(SCSLRFIDCMD.SCSLWriteRegister);
+            RunShortOperation(SCSLRFIDCMD.SCSLWriteRegister, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.COMMANDENDRESPONSE);
         }
     }
 }

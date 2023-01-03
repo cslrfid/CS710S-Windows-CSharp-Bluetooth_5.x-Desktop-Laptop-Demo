@@ -71,7 +71,7 @@ namespace CSLibrary
             if (pwrlevel > 330)
                 pwrlevel = 330;
 
-            RFIDRegister.AntennaPortConfig.SetPower((UInt16)pwrlevel, (byte)port);
+            RFIDRegister.AntennaPortConfig.SetPower((UInt16)(pwrlevel * 10), (byte)port);
             return Result.OK;
         }
 
