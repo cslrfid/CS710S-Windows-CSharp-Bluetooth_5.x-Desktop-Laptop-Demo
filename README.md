@@ -8,4 +8,4 @@ The demo app is intended for connecting the CS710S reader to a Windows-based PC 
 
 To run the program you can run **CS710SDesktopDemo.exe** under the ```Executable``` folder.
 
-Source code of the demo can be found under the ```CS108DesktopDemo``` folder.
+Source code of the demo can be found under the ```CS710SDesktopDemo``` folder.
