@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CS108DesktopDemo
+namespace CS710SDesktopDemo
 {
     static class Program
     {

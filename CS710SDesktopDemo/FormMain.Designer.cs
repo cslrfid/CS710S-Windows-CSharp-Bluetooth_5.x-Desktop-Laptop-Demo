@@ -1,4 +1,4 @@
-﻿namespace CS108DesktopDemo
+﻿namespace CS710SDesktopDemo
 {
     partial class FormMain
     {
@@ -29,17 +29,18 @@
         private void InitializeComponent()
         {
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.buttonConnect = new System.Windows.Forms.Button();
+            this.buttonInventory = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button4 = new System.Windows.Forms.Button();
+            this.buttonStopInventory = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeaderDeviceName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button5 = new System.Windows.Forms.Button();
+            this.buttonDisconnect = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.dataGridView_EPC = new System.Windows.Forms.DataGridView();
             this.EPC = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button7 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,25 +54,26 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
+            // buttonConnect
             // 
-            this.button2.Location = new System.Drawing.Point(12, 134);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(116, 49);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Connect";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.buttonConnect.Location = new System.Drawing.Point(12, 134);
+            this.buttonConnect.Name = "buttonConnect";
+            this.buttonConnect.Size = new System.Drawing.Size(116, 49);
+            this.buttonConnect.TabIndex = 2;
+            this.buttonConnect.Text = "Connect";
+            this.buttonConnect.UseVisualStyleBackColor = true;
+            this.buttonConnect.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button3
+            // buttonInventory
             // 
-            this.button3.Location = new System.Drawing.Point(12, 253);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(116, 49);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "Inventory";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.buttonInventory.Enabled = false;
+            this.buttonInventory.Location = new System.Drawing.Point(12, 253);
+            this.buttonInventory.Name = "buttonInventory";
+            this.buttonInventory.Size = new System.Drawing.Size(116, 49);
+            this.buttonInventory.TabIndex = 3;
+            this.buttonInventory.Text = "Inventory";
+            this.buttonInventory.UseVisualStyleBackColor = true;
+            this.buttonInventory.Click += new System.EventHandler(this.buttonInventory_Click);
             // 
             // textBox3
             // 
@@ -82,15 +84,16 @@
             this.textBox3.Size = new System.Drawing.Size(513, 104);
             this.textBox3.TabIndex = 5;
             // 
-            // button4
+            // buttonStopInventory
             // 
-            this.button4.Location = new System.Drawing.Point(12, 319);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(116, 49);
-            this.button4.TabIndex = 6;
-            this.button4.Text = "Stop Inventory";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.buttonStopInventory.Enabled = false;
+            this.buttonStopInventory.Location = new System.Drawing.Point(12, 319);
+            this.buttonStopInventory.Name = "buttonStopInventory";
+            this.buttonStopInventory.Size = new System.Drawing.Size(116, 49);
+            this.buttonStopInventory.TabIndex = 6;
+            this.buttonStopInventory.Text = "Stop Inventory";
+            this.buttonStopInventory.UseVisualStyleBackColor = true;
+            this.buttonStopInventory.Click += new System.EventHandler(this.button4_Click);
             // 
             // listView1
             // 
@@ -109,15 +112,16 @@
             this.columnHeaderDeviceName.Text = "Device Name";
             this.columnHeaderDeviceName.Width = 200;
             // 
-            // button5
+            // buttonDisconnect
             // 
-            this.button5.Location = new System.Drawing.Point(12, 189);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(116, 49);
-            this.button5.TabIndex = 8;
-            this.button5.Text = "Disconnect";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.buttonDisconnect.Enabled = false;
+            this.buttonDisconnect.Location = new System.Drawing.Point(12, 189);
+            this.buttonDisconnect.Name = "buttonDisconnect";
+            this.buttonDisconnect.Size = new System.Drawing.Size(116, 49);
+            this.buttonDisconnect.TabIndex = 8;
+            this.buttonDisconnect.Text = "Disconnect";
+            this.buttonDisconnect.UseVisualStyleBackColor = true;
+            this.buttonDisconnect.Click += new System.EventHandler(this.button5_Click);
             // 
             // button6
             // 
@@ -152,22 +156,34 @@
             this.RSSI.HeaderText = "RSSI (dBuV)";
             this.RSSI.Name = "RSSI";
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(12, 453);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(116, 49);
+            this.button7.TabIndex = 11;
+            this.button7.Text = "Exit";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 546);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.dataGridView_EPC);
             this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
+            this.Controls.Add(this.buttonDisconnect);
             this.Controls.Add(this.listView1);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.buttonStopInventory);
             this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.buttonInventory);
+            this.Controls.Add(this.buttonConnect);
             this.Controls.Add(this.button1);
             this.Name = "FormMain";
             this.Text = "CS710S Windows C# Desktop demo";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).EndInit();
             this.ResumeLayout(false);
@@ -178,17 +194,18 @@
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buttonConnect;
+        private System.Windows.Forms.Button buttonInventory;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button buttonStopInventory;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeaderDeviceName;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button buttonDisconnect;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.DataGridView dataGridView_EPC;
         private System.Windows.Forms.DataGridViewTextBoxColumn EPC;
         private System.Windows.Forms.DataGridViewTextBoxColumn RSSI;
+        private System.Windows.Forms.Button button7;
     }
 }
 
