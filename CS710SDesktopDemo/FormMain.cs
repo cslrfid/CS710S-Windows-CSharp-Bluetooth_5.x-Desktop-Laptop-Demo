@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using CSLibrary;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CS108DesktopDemo
 {
@@ -16,6 +18,7 @@ namespace CS108DesktopDemo
     {
         HighLevelInterface _reader = new HighLevelInterface();
 
+        int deviceCount = 0;
 
         public FormMain()
         {
@@ -27,17 +30,19 @@ namespace CS108DesktopDemo
         private void button2_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedIndices.Count < 1)
-                System.Console.WriteLine("Please select reader first!");
-            else
             {
-                textBox3.Text = "Please wait, connecting..." + Environment.NewLine;
-                _reader.rfid.OnStateChanged += new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent);
-                _reader.ConnectAsync(CSLibrary.DeviceFinder.GetDeviceInformation(listView1.SelectedIndices[0]), CSLibrary.DeviceFinder.GetDeviceModel(listView1.SelectedIndices[0]));
+                System.Console.WriteLine("Please select reader first!");
+                return;
             }
+
+            textBox3.Text = "Please wait, connecting..." + Environment.NewLine;
+            _reader.rfid.OnStateChanged += new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent);
+            _reader.ConnectAsync(CSLibrary.DeviceFinder.GetDeviceInformation(listView1.SelectedIndices[0]), CSLibrary.DeviceFinder.GetDeviceModel(listView1.SelectedIndices[0]));
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            deviceCount = 0;
             listView1.Clear();
             CSLibrary.DeviceFinder.SearchDevice();
         }
@@ -52,11 +57,10 @@ namespace CS108DesktopDemo
                     CSLibrary.DeviceFinder.DeviceFinderArgs dfa = (CSLibrary.DeviceFinder.DeviceFinderArgs)deviceInfo;
                     CSLibrary.DeviceFinder.DeviceInfomation di = (CSLibrary.DeviceFinder.DeviceInfomation)dfa.Found;
                     //DeviceInformation ndi = (DeviceInformation)di.nativeDeviceInformation;
-
-                    string a = String.Format("Added  {0} {1}", di.ID, di.deviceName);
+                    deviceCount++;
+                    string a = String.Format("Added {0} {1} {2}", deviceCount, di.ID, di.deviceName);
                     Debug.WriteLine(a);
-                    listView1.Items.Add(di.deviceName);
-
+                    listView1.Items.Add(deviceCount + ". " + di.deviceName);
                 }
             }
         }
@@ -81,7 +85,15 @@ namespace CS108DesktopDemo
             if (e.type != CSLibrary.Constants.CallbackType.TAG_RANGING)
                 return;
 
-            textBox2.Text += e.info.epc + Environment.NewLine;
+            foreach (DataGridViewRow row in dataGridView_EPC.Rows)
+            {
+                if (row.Cells[0].Value == e.info.epc)
+                    return;
+            }
+
+            int index = dataGridView_EPC.Rows.Add();
+            dataGridView_EPC.Rows[index].Cells[0].Value = e.info.epc;
+            dataGridView_EPC.Rows[index].Cells[1].Value = Math.Round(e.info.rssi, 1, MidpointRounding.AwayFromZero);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -94,12 +106,20 @@ namespace CS108DesktopDemo
         {
             _reader.rfid.OnStateChanged -= new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent);
             _reader.DisconnectAsync();
-            textBox3.Text += "Please wait to disconnect CS108, BT led will change to flash" + Environment.NewLine;
+            textBox3.Text += "Please wait to disconnect CS710S, BT led will change to flash" + Environment.NewLine;
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            textBox2.Text = "";
+            dataGridView_EPC.Rows.Clear();
+            dataGridView_EPC.Refresh();
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            this.Text = this.Text + " " + version.ToString(3);
         }
     }
 }

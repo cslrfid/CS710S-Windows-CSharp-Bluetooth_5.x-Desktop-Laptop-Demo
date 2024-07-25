@@ -31,13 +31,16 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.button4 = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeaderDeviceName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.dataGridView_EPC = new System.Windows.Forms.DataGridView();
+            this.EPC = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -70,21 +73,13 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(144, 253);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox2.Size = new System.Drawing.Size(290, 183);
-            this.textBox2.TabIndex = 4;
-            // 
             // textBox3
             // 
+            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox3.Location = new System.Drawing.Point(144, 134);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(290, 104);
+            this.textBox3.Size = new System.Drawing.Size(513, 104);
             this.textBox3.TabIndex = 5;
             // 
             // button4
@@ -101,9 +96,10 @@
             // 
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderDeviceName});
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(144, 12);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(290, 78);
+            this.listView1.Size = new System.Drawing.Size(513, 78);
             this.listView1.TabIndex = 7;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.List;
@@ -133,22 +129,47 @@
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // dataGridView_EPC
+            // 
+            this.dataGridView_EPC.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_EPC.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.EPC,
+            this.RSSI});
+            this.dataGridView_EPC.Location = new System.Drawing.Point(144, 253);
+            this.dataGridView_EPC.Name = "dataGridView_EPC";
+            this.dataGridView_EPC.RowHeadersVisible = false;
+            this.dataGridView_EPC.Size = new System.Drawing.Size(513, 281);
+            this.dataGridView_EPC.TabIndex = 10;
+            // 
+            // EPC
+            // 
+            this.EPC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.EPC.HeaderText = "EPC (with duplicate filter)";
+            this.EPC.Name = "EPC";
+            // 
+            // RSSI
+            // 
+            this.RSSI.HeaderText = "RSSI (dBuV)";
+            this.RSSI.Name = "RSSI";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(448, 448);
+            this.ClientSize = new System.Drawing.Size(683, 546);
+            this.Controls.Add(this.dataGridView_EPC);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Name = "FormMain";
-            this.Text = "Form1";
+            this.Text = "CS710S Windows C# Desktop demo";
+            this.Load += new System.EventHandler(this.FormMain_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -159,13 +180,15 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeaderDeviceName;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.DataGridView dataGridView_EPC;
+        private System.Windows.Forms.DataGridViewTextBoxColumn EPC;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RSSI;
     }
 }
 
