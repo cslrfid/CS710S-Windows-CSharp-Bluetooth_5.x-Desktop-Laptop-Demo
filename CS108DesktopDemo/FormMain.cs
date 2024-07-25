@@ -32,7 +32,7 @@ namespace CS108DesktopDemo
             {
                 textBox3.Text = "Please wait, connecting..." + Environment.NewLine;
                 _reader.rfid.OnStateChanged += new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent);
-                _reader.ConnectAsync(CSLibrary.DeviceFinder.GetDeviceInformation(listView1.SelectedIndices[0]));
+                _reader.ConnectAsync(CSLibrary.DeviceFinder.GetDeviceInformation(listView1.SelectedIndices[0]), CSLibrary.DeviceFinder.GetDeviceModel(listView1.SelectedIndices[0]));
             }
         }
 
@@ -64,7 +64,6 @@ namespace CS108DesktopDemo
         private void button3_Click(object sender, EventArgs e)
         {
             _reader.rfid.OnAsyncCallback += new EventHandler<CSLibrary.Events.OnAsyncCallbackEventArgs>(TagInventoryEvent);
-            //_reader.rfid.SetPowerLevel(150); // Set Power to 15dB for testing
             _reader.rfid.Options.TagRanging.flags = 0;
             _reader.rfid.StartOperation(CSLibrary.Constants.Operation.TAG_RANGING);
         }
