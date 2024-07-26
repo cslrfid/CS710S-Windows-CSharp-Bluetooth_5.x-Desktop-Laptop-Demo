@@ -121,7 +121,7 @@ namespace CS710SDesktopDemo
             buttonStopInventory.Enabled = false;
             _reader.rfid.OnStateChanged -= new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent);
             _reader.DisconnectAsync();
-            textBox3.Text += "Please wait : disconnecting... Please wait until Bluetooth LED changes back to flash" + Environment.NewLine;
+            textBox3.Text += "Please wait : disconnecting... Please wait until Bluetooth LED changes back to flashing" + Environment.NewLine;
         }
 
         private void button6_Click(object sender, EventArgs e)
