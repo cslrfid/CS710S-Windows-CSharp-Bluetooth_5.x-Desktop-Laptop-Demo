@@ -134,7 +134,7 @@ namespace CS710SDesktopDemo
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            this.Text = this.Text + " " + version.ToString(3);
+            this.Text = this.Text + " " + version.ToString(3) + " (Only for CS710S)";
         }
 
         private void button7_Click(object sender, EventArgs e)

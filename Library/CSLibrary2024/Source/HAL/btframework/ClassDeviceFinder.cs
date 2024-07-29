@@ -129,6 +129,7 @@ namespace CSLibrary
 
         static public void SearchDevice()
         {
+            ClearDeviceList();
             if (Manager == null)
             {
                 Manager = new wclBluetoothManager();
