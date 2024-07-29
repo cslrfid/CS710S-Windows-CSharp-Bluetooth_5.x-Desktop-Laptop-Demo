@@ -285,17 +285,22 @@ namespace CSLibrary
                             if (Res != wclErrors.WCL_E_SUCCESS)
                                 di.deviceName = DevName = "Error: 0x" + Res.ToString("X8");
                             else
-                                di.deviceName = DevName;
+                            {
+                                if (!(DevName.Length > 10 && DevName.Substring(0, 10) == "Bluetooth "))
+                                {
+                                    di.deviceName = DevName;
 
-                            di.ID = (uint)_deviceDB.Count;
-                            di.macAdd = Address;
-                            di.nativeDeviceInformation = null;
+                                    di.ID = (uint)_deviceDB.Count;
+                                    di.macAdd = Address;
+                                    di.nativeDeviceInformation = null;
 
-                            _deviceDB.Add(Address);
-                            //_deviceTypeDB.Add(RFIDDEVICE.MODEL.CS108);
-                            _deviceTypeDB.Add(RFIDDEVICE.MODEL.CS710S);
+                                    _deviceDB.Add(Address);
+                                    //_deviceTypeDB.Add(RFIDDEVICE.MODEL.CS108);
+                                    _deviceTypeDB.Add(RFIDDEVICE.MODEL.CS710S);
 
-                            RaiseEvent<DeviceFinderArgs>(OnSearchCompleted, new DeviceFinderArgs(di));
+                                    RaiseEvent<DeviceFinderArgs>(OnSearchCompleted, new DeviceFinderArgs(di));
+                                }
+                            }
                         }
                         break;
                 }
