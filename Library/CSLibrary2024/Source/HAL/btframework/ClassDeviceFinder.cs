@@ -278,8 +278,11 @@ namespace CSLibrary
                         {
                             CSLibrary.DeviceFinder.DeviceInfomation di = new CSLibrary.DeviceFinder.DeviceInfomation();
 
-                            bool isCS108 = (Address & 0x3ca308000000) == 0x3ca308000000 || (Address & 0x6c79b8000000) == 0x6c79b8000000;
-                            bool isCS710S = (Address & 0x94c692000000) == 0x84c692000000;
+                            bool isCS108 = (Address & 0x3ca308000000) == 0x3ca308000000 || 
+                                            (Address & 0x6c79b8000000) == 0x6c79b8000000 ||
+                                            (Address & 0x7C010A000000) == 0x7C010A000000 ||
+                                            (Address & 0xC8FD19000000) == 0xC8FD19000000;
+                            bool isCS710S = (Address & 0x84c692000000) == 0x84c692000000;
 
                             if (isCS108 || isCS710S)
                             {
