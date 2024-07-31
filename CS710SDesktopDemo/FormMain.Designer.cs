@@ -183,7 +183,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(882, 546);
+            this.ClientSize = new System.Drawing.Size(886, 546);
             this.Controls.Add(this.checkBoxMacAddressFiltering);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.dataGridView_EPC);
