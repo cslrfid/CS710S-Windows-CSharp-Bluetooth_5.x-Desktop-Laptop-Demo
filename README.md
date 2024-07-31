@@ -1,4 +1,4 @@
-# CS710S Windows C# Bluethhoth Demo App
+# CS710S Windows C# Bluetooth Demo App
 
 The demo app is intended for connecting the CS710S reader to a Windows-based PC through Bluetooth 5.x for the following operations:
 (This App is also backward compatible to CS108 reader)
