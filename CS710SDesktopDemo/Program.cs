@@ -18,6 +18,7 @@ namespace CS710SDesktopDemo
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());
 
+            // Fix can not disconnect reader issue
             if (System.Windows.Forms.Application.MessageLoop)
             {
                 // WinForms 應用程式
