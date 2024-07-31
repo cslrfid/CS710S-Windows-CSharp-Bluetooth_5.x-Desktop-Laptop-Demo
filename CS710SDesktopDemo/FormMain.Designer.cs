@@ -41,12 +41,13 @@
             this.EPC = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button7 = new System.Windows.Forms.Button();
+            this.checkBoxMacAddressFiltering = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(12, 41);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(116, 49);
             this.button1.TabIndex = 0;
@@ -81,7 +82,7 @@
             this.textBox3.Location = new System.Drawing.Point(144, 134);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(513, 104);
+            this.textBox3.Size = new System.Drawing.Size(718, 104);
             this.textBox3.TabIndex = 5;
             // 
             // buttonStopInventory
@@ -102,7 +103,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(144, 12);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(513, 78);
+            this.listView1.Size = new System.Drawing.Size(718, 78);
             this.listView1.TabIndex = 7;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.List;
@@ -110,7 +111,7 @@
             // columnHeaderDeviceName
             // 
             this.columnHeaderDeviceName.Text = "Device Name";
-            this.columnHeaderDeviceName.Width = 200;
+            this.columnHeaderDeviceName.Width = 350;
             // 
             // buttonDisconnect
             // 
@@ -142,7 +143,7 @@
             this.dataGridView_EPC.Location = new System.Drawing.Point(144, 253);
             this.dataGridView_EPC.Name = "dataGridView_EPC";
             this.dataGridView_EPC.RowHeadersVisible = false;
-            this.dataGridView_EPC.Size = new System.Drawing.Size(513, 281);
+            this.dataGridView_EPC.Size = new System.Drawing.Size(718, 281);
             this.dataGridView_EPC.TabIndex = 10;
             // 
             // EPC
@@ -166,11 +167,24 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
+            // checkBoxMacAddressFiltering
+            // 
+            this.checkBoxMacAddressFiltering.AutoSize = true;
+            this.checkBoxMacAddressFiltering.Checked = true;
+            this.checkBoxMacAddressFiltering.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxMacAddressFiltering.Location = new System.Drawing.Point(12, 18);
+            this.checkBoxMacAddressFiltering.Name = "checkBoxMacAddressFiltering";
+            this.checkBoxMacAddressFiltering.Size = new System.Drawing.Size(127, 17);
+            this.checkBoxMacAddressFiltering.TabIndex = 12;
+            this.checkBoxMacAddressFiltering.Text = "Mac Address Filtering";
+            this.checkBoxMacAddressFiltering.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(683, 546);
+            this.ClientSize = new System.Drawing.Size(882, 546);
+            this.Controls.Add(this.checkBoxMacAddressFiltering);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.dataGridView_EPC);
             this.Controls.Add(this.button6);
@@ -206,6 +220,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn EPC;
         private System.Windows.Forms.DataGridViewTextBoxColumn RSSI;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.CheckBox checkBoxMacAddressFiltering;
     }
 }
 

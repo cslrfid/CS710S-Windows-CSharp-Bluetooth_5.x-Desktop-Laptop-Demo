@@ -47,7 +47,7 @@ namespace CS710SDesktopDemo
         {
             deviceCount = 0;
             listView1.Clear();
-            CSLibrary.DeviceFinder.SearchDevice();
+            CSLibrary.DeviceFinder.SearchDevice(checkBoxMacAddressFiltering.Checked);
         }
 
         private async void DeviceWatcher_Added(object sender, object deviceInfo)
@@ -63,9 +63,20 @@ namespace CS710SDesktopDemo
                     deviceCount++;
                     string a = String.Format("Added {0} {1} {2}", deviceCount, di.ID, di.deviceName);
                     Debug.WriteLine(a);
-                    listView1.Items.Add(deviceCount + ". " + di.deviceName);
+                    listView1.Items.Add(deviceCount + ". " + di.deviceName + " ; MAC:" + MacAddress(di.macAdd) + " ; " + CSLibrary.DeviceFinder.GetDeviceModel((int)di.ID));
                 }
             }
+        }
+
+        string MacAddress (long address)
+        {
+            return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}",
+        (address >> (8 * 5)) & 0xff,
+        (address >> (8 * 4)) & 0xff,
+        (address >> (8 * 3)) & 0xff,
+        (address >> (8 * 2)) & 0xff,
+        (address >> (8 * 1)) & 0xff,
+        (address >> (8 * 0)) & 0xff);
         }
 
         private void buttonInventory_Click(object sender, EventArgs e)
@@ -134,7 +145,7 @@ namespace CS710SDesktopDemo
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            this.Text = this.Text + " " + version.ToString(3) + " (Only for CS710S)";
+            this.Text = this.Text + " " + version.ToString(3) + " (backward compatible to CS108)";
         }
 
         private void button7_Click(object sender, EventArgs e)

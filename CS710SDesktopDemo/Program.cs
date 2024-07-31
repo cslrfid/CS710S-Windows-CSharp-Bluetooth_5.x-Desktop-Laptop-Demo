@@ -17,6 +17,17 @@ namespace CS710SDesktopDemo
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());
+
+            if (System.Windows.Forms.Application.MessageLoop)
+            {
+                // WinForms 應用程式
+                System.Windows.Forms.Application.Exit();
+            }
+            else
+            {
+                // 控制台應用程式
+                System.Environment.Exit(0); // 非零值可用於自訂錯誤碼
+            }
         }
     }
 }
