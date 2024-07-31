@@ -12,6 +12,7 @@ using System.Windows.Forms;
 
 using CSLibrary;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace CS710SDesktopDemo
@@ -48,7 +49,20 @@ namespace CS710SDesktopDemo
         {
             deviceCount = 0;
             listView1.Clear();
+            buttonConnect.Enabled = false;
+            textBox3.Text = "Searching RFID reader, Please wait 6 seconds...";
+            CreateAndRunTaskWithDelay("search", 6000);
             CSLibrary.DeviceFinder.SearchDevice(checkBoxMacAddressFiltering.Checked);
+        }
+
+        async Task CreateAndRunTaskWithDelay(string taskName, int delayMilliseconds)
+        {
+            await Task.Delay(delayMilliseconds);
+            this.Invoke((MethodInvoker)(() =>
+            {
+                buttonConnect.Enabled = true;
+                textBox3.Text += "Search Completed";
+            }));
         }
 
         private async void DeviceWatcher_Added(object sender, object deviceInfo)

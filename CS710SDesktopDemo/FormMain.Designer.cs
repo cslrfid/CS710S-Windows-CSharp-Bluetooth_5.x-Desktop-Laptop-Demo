@@ -42,6 +42,9 @@
             this.RSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button7 = new System.Windows.Forms.Button();
             this.checkBoxMacAddressFiltering = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,7 +60,7 @@
             // 
             // buttonConnect
             // 
-            this.buttonConnect.Location = new System.Drawing.Point(12, 134);
+            this.buttonConnect.Location = new System.Drawing.Point(12, 101);
             this.buttonConnect.Name = "buttonConnect";
             this.buttonConnect.Size = new System.Drawing.Size(116, 49);
             this.buttonConnect.TabIndex = 2;
@@ -68,7 +71,7 @@
             // buttonInventory
             // 
             this.buttonInventory.Enabled = false;
-            this.buttonInventory.Location = new System.Drawing.Point(12, 253);
+            this.buttonInventory.Location = new System.Drawing.Point(12, 236);
             this.buttonInventory.Name = "buttonInventory";
             this.buttonInventory.Size = new System.Drawing.Size(116, 49);
             this.buttonInventory.TabIndex = 3;
@@ -79,7 +82,7 @@
             // textBox3
             // 
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.Location = new System.Drawing.Point(144, 134);
+            this.textBox3.Location = new System.Drawing.Point(144, 153);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(718, 104);
@@ -88,7 +91,7 @@
             // buttonStopInventory
             // 
             this.buttonStopInventory.Enabled = false;
-            this.buttonStopInventory.Location = new System.Drawing.Point(12, 319);
+            this.buttonStopInventory.Location = new System.Drawing.Point(12, 302);
             this.buttonStopInventory.Name = "buttonStopInventory";
             this.buttonStopInventory.Size = new System.Drawing.Size(116, 49);
             this.buttonStopInventory.TabIndex = 6;
@@ -101,7 +104,7 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderDeviceName});
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(144, 12);
+            this.listView1.Location = new System.Drawing.Point(144, 41);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(718, 78);
             this.listView1.TabIndex = 7;
@@ -116,7 +119,7 @@
             // buttonDisconnect
             // 
             this.buttonDisconnect.Enabled = false;
-            this.buttonDisconnect.Location = new System.Drawing.Point(12, 189);
+            this.buttonDisconnect.Location = new System.Drawing.Point(12, 166);
             this.buttonDisconnect.Name = "buttonDisconnect";
             this.buttonDisconnect.Size = new System.Drawing.Size(116, 49);
             this.buttonDisconnect.TabIndex = 8;
@@ -126,7 +129,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(12, 387);
+            this.button6.Location = new System.Drawing.Point(12, 369);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(116, 49);
             this.button6.TabIndex = 9;
@@ -140,7 +143,7 @@
             this.dataGridView_EPC.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EPC,
             this.RSSI});
-            this.dataGridView_EPC.Location = new System.Drawing.Point(144, 253);
+            this.dataGridView_EPC.Location = new System.Drawing.Point(144, 288);
             this.dataGridView_EPC.Name = "dataGridView_EPC";
             this.dataGridView_EPC.RowHeadersVisible = false;
             this.dataGridView_EPC.Size = new System.Drawing.Size(718, 281);
@@ -159,7 +162,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(12, 453);
+            this.button7.Location = new System.Drawing.Point(12, 433);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(116, 49);
             this.button7.TabIndex = 11;
@@ -179,11 +182,44 @@
             this.checkBoxMacAddressFiltering.Text = "Mac Address Filtering";
             this.checkBoxMacAddressFiltering.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(145, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(145, 16);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Available Readers :";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(145, 134);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(58, 16);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Status :";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(145, 269);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(51, 16);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Tags :";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 546);
+            this.ClientSize = new System.Drawing.Size(886, 590);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBoxMacAddressFiltering);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.dataGridView_EPC);
@@ -221,6 +257,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn RSSI;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.CheckBox checkBoxMacAddressFiltering;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 
