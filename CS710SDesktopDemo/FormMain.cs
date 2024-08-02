@@ -6,19 +6,23 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using CSLibrary;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace CS108DesktopDemo
+
+namespace CS710SDesktopDemo
 {
     public partial class FormMain : Form
     {
         HighLevelInterface _reader = new HighLevelInterface();
 
         int deviceCount = 0;
+        bool exit = false;
 
         public FormMain()
         {
@@ -29,6 +33,7 @@ namespace CS108DesktopDemo
 
         private void button2_Click(object sender, EventArgs e)
         {
+
             if (listView1.SelectedIndices.Count < 1)
             {
                 System.Console.WriteLine("Please select reader first!");
@@ -44,7 +49,20 @@ namespace CS108DesktopDemo
         {
             deviceCount = 0;
             listView1.Clear();
-            CSLibrary.DeviceFinder.SearchDevice();
+            buttonConnect.Enabled = false;
+            textBox3.Text = "Searching RFID reader, Please wait 6 seconds...";
+            CreateAndRunTaskWithDelay("search", 6000);
+            CSLibrary.DeviceFinder.SearchDevice(checkBoxMacAddressFiltering.Checked);
+        }
+
+        async Task CreateAndRunTaskWithDelay(string taskName, int delayMilliseconds)
+        {
+            await Task.Delay(delayMilliseconds);
+            this.Invoke((MethodInvoker)(() =>
+            {
+                buttonConnect.Enabled = true;
+                textBox3.Text += "Search Completed";
+            }));
         }
 
         private async void DeviceWatcher_Added(object sender, object deviceInfo)
@@ -60,12 +78,23 @@ namespace CS108DesktopDemo
                     deviceCount++;
                     string a = String.Format("Added {0} {1} {2}", deviceCount, di.ID, di.deviceName);
                     Debug.WriteLine(a);
-                    listView1.Items.Add(deviceCount + ". " + di.deviceName);
+                    listView1.Items.Add(deviceCount + ". " + di.deviceName + " ; MAC:" + MacAddress(di.macAdd) + " ; " + CSLibrary.DeviceFinder.GetDeviceModel((int)di.ID));
                 }
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        string MacAddress (long address)
+        {
+            return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}",
+        (address >> (8 * 5)) & 0xff,
+        (address >> (8 * 4)) & 0xff,
+        (address >> (8 * 3)) & 0xff,
+        (address >> (8 * 2)) & 0xff,
+        (address >> (8 * 1)) & 0xff,
+        (address >> (8 * 0)) & 0xff);
+        }
+
+        private void buttonInventory_Click(object sender, EventArgs e)
         {
             _reader.rfid.OnAsyncCallback += new EventHandler<CSLibrary.Events.OnAsyncCallbackEventArgs>(TagInventoryEvent);
             _reader.rfid.Options.TagRanging.flags = 0;
@@ -76,6 +105,10 @@ namespace CS108DesktopDemo
         {
             if (e.state == CSLibrary.Constants.RFState.INITIALIZATION_COMPLETE)
             {
+                buttonConnect.Enabled = false;
+                buttonDisconnect.Enabled = true;
+                buttonInventory.Enabled = true;
+                buttonStopInventory.Enabled = true;
                 textBox3.Text += "Connected" + Environment.NewLine;
             }
         }
@@ -87,12 +120,16 @@ namespace CS108DesktopDemo
 
             foreach (DataGridViewRow row in dataGridView_EPC.Rows)
             {
-                if (row.Cells[0].Value == e.info.epc)
-                    return;
+                if (row.Cells[0].Value != null)
+                    if (row.Cells[0].Value.ToString() == e.info.epc.ToString())
+                    {
+                        row.Cells[1].Value = Math.Round(e.info.rssi, 1, MidpointRounding.AwayFromZero);
+                        return;
+                    }
             }
 
             int index = dataGridView_EPC.Rows.Add();
-            dataGridView_EPC.Rows[index].Cells[0].Value = e.info.epc;
+            dataGridView_EPC.Rows[index].Cells[0].Value = e.info.epc.ToString();
             dataGridView_EPC.Rows[index].Cells[1].Value = Math.Round(e.info.rssi, 1, MidpointRounding.AwayFromZero);
         }
 
@@ -104,9 +141,13 @@ namespace CS108DesktopDemo
 
         private void button5_Click(object sender, EventArgs e)
         {
+            buttonConnect.Enabled = true;
+            buttonDisconnect.Enabled = false;
+            buttonInventory.Enabled = false;
+            buttonStopInventory.Enabled = false;
             _reader.rfid.OnStateChanged -= new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent);
             _reader.DisconnectAsync();
-            textBox3.Text += "Please wait to disconnect CS710S, BT led will change to flash" + Environment.NewLine;
+            textBox3.Text += "Please wait : disconnecting... Please wait until Bluetooth LED changes back to flashing" + Environment.NewLine;
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -119,7 +160,30 @@ namespace CS108DesktopDemo
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            this.Text = this.Text + " " + version.ToString(3);
+            this.Text = this.Text + " " + version.ToString(3) + " (backward compatible to CS108)";
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (buttonDisconnect.Enabled)
+            {
+                MessageBox.Show("Please DISCONNECT the reader before exiting the program!!!!");
+            }
+            else
+            {
+                this.Close();
+            }
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (buttonDisconnect.Enabled)
+            {
+                MessageBox.Show("Please DISCONNECT the reader before exiting the program!!!!");
+                e.Cancel = true;
+            }
+            else
+                e.Cancel = false;
         }
     }
 }

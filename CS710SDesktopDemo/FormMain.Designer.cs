@@ -1,4 +1,4 @@
-﻿namespace CS108DesktopDemo
+﻿namespace CS710SDesktopDemo
 {
     partial class FormMain
     {
@@ -29,23 +29,28 @@
         private void InitializeComponent()
         {
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.buttonConnect = new System.Windows.Forms.Button();
+            this.buttonInventory = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button4 = new System.Windows.Forms.Button();
+            this.buttonStopInventory = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeaderDeviceName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button5 = new System.Windows.Forms.Button();
+            this.buttonDisconnect = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.dataGridView_EPC = new System.Windows.Forms.DataGridView();
             this.EPC = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button7 = new System.Windows.Forms.Button();
+            this.checkBoxMacAddressFiltering = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(12, 41);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(116, 49);
             this.button1.TabIndex = 0;
@@ -53,53 +58,55 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
+            // buttonConnect
             // 
-            this.button2.Location = new System.Drawing.Point(12, 134);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(116, 49);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Connect";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.buttonConnect.Location = new System.Drawing.Point(12, 101);
+            this.buttonConnect.Name = "buttonConnect";
+            this.buttonConnect.Size = new System.Drawing.Size(116, 49);
+            this.buttonConnect.TabIndex = 2;
+            this.buttonConnect.Text = "Connect";
+            this.buttonConnect.UseVisualStyleBackColor = true;
+            this.buttonConnect.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button3
+            // buttonInventory
             // 
-            this.button3.Location = new System.Drawing.Point(12, 253);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(116, 49);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "Inventory";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.buttonInventory.Enabled = false;
+            this.buttonInventory.Location = new System.Drawing.Point(12, 236);
+            this.buttonInventory.Name = "buttonInventory";
+            this.buttonInventory.Size = new System.Drawing.Size(116, 49);
+            this.buttonInventory.TabIndex = 3;
+            this.buttonInventory.Text = "Inventory";
+            this.buttonInventory.UseVisualStyleBackColor = true;
+            this.buttonInventory.Click += new System.EventHandler(this.buttonInventory_Click);
             // 
             // textBox3
             // 
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.Location = new System.Drawing.Point(144, 134);
+            this.textBox3.Location = new System.Drawing.Point(144, 153);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(513, 104);
+            this.textBox3.Size = new System.Drawing.Size(718, 104);
             this.textBox3.TabIndex = 5;
             // 
-            // button4
+            // buttonStopInventory
             // 
-            this.button4.Location = new System.Drawing.Point(12, 319);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(116, 49);
-            this.button4.TabIndex = 6;
-            this.button4.Text = "Stop Inventory";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.buttonStopInventory.Enabled = false;
+            this.buttonStopInventory.Location = new System.Drawing.Point(12, 302);
+            this.buttonStopInventory.Name = "buttonStopInventory";
+            this.buttonStopInventory.Size = new System.Drawing.Size(116, 49);
+            this.buttonStopInventory.TabIndex = 6;
+            this.buttonStopInventory.Text = "Stop Inventory";
+            this.buttonStopInventory.UseVisualStyleBackColor = true;
+            this.buttonStopInventory.Click += new System.EventHandler(this.button4_Click);
             // 
             // listView1
             // 
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderDeviceName});
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(144, 12);
+            this.listView1.Location = new System.Drawing.Point(144, 41);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(513, 78);
+            this.listView1.Size = new System.Drawing.Size(718, 78);
             this.listView1.TabIndex = 7;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.List;
@@ -107,21 +114,22 @@
             // columnHeaderDeviceName
             // 
             this.columnHeaderDeviceName.Text = "Device Name";
-            this.columnHeaderDeviceName.Width = 200;
+            this.columnHeaderDeviceName.Width = 350;
             // 
-            // button5
+            // buttonDisconnect
             // 
-            this.button5.Location = new System.Drawing.Point(12, 189);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(116, 49);
-            this.button5.TabIndex = 8;
-            this.button5.Text = "Disconnect";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.buttonDisconnect.Enabled = false;
+            this.buttonDisconnect.Location = new System.Drawing.Point(12, 166);
+            this.buttonDisconnect.Name = "buttonDisconnect";
+            this.buttonDisconnect.Size = new System.Drawing.Size(116, 49);
+            this.buttonDisconnect.TabIndex = 8;
+            this.buttonDisconnect.Text = "Disconnect";
+            this.buttonDisconnect.UseVisualStyleBackColor = true;
+            this.buttonDisconnect.Click += new System.EventHandler(this.button5_Click);
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(12, 387);
+            this.button6.Location = new System.Drawing.Point(12, 369);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(116, 49);
             this.button6.TabIndex = 9;
@@ -135,10 +143,10 @@
             this.dataGridView_EPC.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EPC,
             this.RSSI});
-            this.dataGridView_EPC.Location = new System.Drawing.Point(144, 253);
+            this.dataGridView_EPC.Location = new System.Drawing.Point(144, 288);
             this.dataGridView_EPC.Name = "dataGridView_EPC";
             this.dataGridView_EPC.RowHeadersVisible = false;
-            this.dataGridView_EPC.Size = new System.Drawing.Size(513, 281);
+            this.dataGridView_EPC.Size = new System.Drawing.Size(718, 281);
             this.dataGridView_EPC.TabIndex = 10;
             // 
             // EPC
@@ -152,22 +160,80 @@
             this.RSSI.HeaderText = "RSSI (dBuV)";
             this.RSSI.Name = "RSSI";
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(12, 433);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(116, 49);
+            this.button7.TabIndex = 11;
+            this.button7.Text = "Exit";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // checkBoxMacAddressFiltering
+            // 
+            this.checkBoxMacAddressFiltering.AutoSize = true;
+            this.checkBoxMacAddressFiltering.Checked = true;
+            this.checkBoxMacAddressFiltering.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxMacAddressFiltering.Location = new System.Drawing.Point(12, 18);
+            this.checkBoxMacAddressFiltering.Name = "checkBoxMacAddressFiltering";
+            this.checkBoxMacAddressFiltering.Size = new System.Drawing.Size(127, 17);
+            this.checkBoxMacAddressFiltering.TabIndex = 12;
+            this.checkBoxMacAddressFiltering.Text = "Mac Address Filtering";
+            this.checkBoxMacAddressFiltering.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(145, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(145, 16);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Available Readers :";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(145, 134);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(58, 16);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Status :";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(145, 269);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(51, 16);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Tags :";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(683, 546);
+            this.ClientSize = new System.Drawing.Size(886, 590);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.checkBoxMacAddressFiltering);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.dataGridView_EPC);
             this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
+            this.Controls.Add(this.buttonDisconnect);
             this.Controls.Add(this.listView1);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.buttonStopInventory);
             this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.buttonInventory);
+            this.Controls.Add(this.buttonConnect);
             this.Controls.Add(this.button1);
             this.Name = "FormMain";
             this.Text = "CS710S Windows C# Desktop demo";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).EndInit();
             this.ResumeLayout(false);
@@ -178,17 +244,22 @@
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buttonConnect;
+        private System.Windows.Forms.Button buttonInventory;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button buttonStopInventory;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeaderDeviceName;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button buttonDisconnect;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.DataGridView dataGridView_EPC;
         private System.Windows.Forms.DataGridViewTextBoxColumn EPC;
         private System.Windows.Forms.DataGridViewTextBoxColumn RSSI;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.CheckBox checkBoxMacAddressFiltering;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 
