@@ -96,6 +96,9 @@ namespace CS710SDesktopDemo
 
         private void buttonInventory_Click(object sender, EventArgs e)
         {
+            _reader.rfid.AntennaPortSetState(0, CSLibrary.Constants.AntennaPortState.ENABLED);
+            _reader.rfid.SetPowerLevel(300);
+            _reader.rfid.SetCurrentLinkProfile(343);
             _reader.rfid.OnAsyncCallback += new EventHandler<CSLibrary.Events.OnAsyncCallbackEventArgs>(TagInventoryEvent);
             _reader.rfid.Options.TagRanging.flags = 0;
             _reader.rfid.StartOperation(CSLibrary.Constants.Operation.TAG_RANGING);
