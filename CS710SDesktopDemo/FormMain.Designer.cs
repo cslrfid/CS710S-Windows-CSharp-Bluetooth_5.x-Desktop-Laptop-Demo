@@ -45,6 +45,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBox_profiles = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_EPC)).BeginInit();
             this.SuspendLayout();
             // 
@@ -75,7 +77,7 @@
             this.buttonInventory.Name = "buttonInventory";
             this.buttonInventory.Size = new System.Drawing.Size(116, 49);
             this.buttonInventory.TabIndex = 3;
-            this.buttonInventory.Text = "Inventory";
+            this.buttonInventory.Text = "Start Inventory";
             this.buttonInventory.UseVisualStyleBackColor = true;
             this.buttonInventory.Click += new System.EventHandler(this.buttonInventory_Click);
             // 
@@ -85,7 +87,7 @@
             this.textBox3.Location = new System.Drawing.Point(144, 153);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(718, 104);
+            this.textBox3.Size = new System.Drawing.Size(718, 80);
             this.textBox3.TabIndex = 5;
             // 
             // buttonStopInventory
@@ -212,11 +214,32 @@
             this.label3.TabIndex = 15;
             this.label3.Text = "Tags :";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(145, 242);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(119, 13);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "RF Modes / Link Profile";
+            this.label4.Visible = false;
+            // 
+            // comboBox_profiles
+            // 
+            this.comboBox_profiles.FormattingEnabled = true;
+            this.comboBox_profiles.Location = new System.Drawing.Point(270, 239);
+            this.comboBox_profiles.Name = "comboBox_profiles";
+            this.comboBox_profiles.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_profiles.TabIndex = 18;
+            this.comboBox_profiles.Visible = false;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(886, 590);
+            this.Controls.Add(this.comboBox_profiles);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -260,6 +283,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBox_profiles;
     }
 }
 

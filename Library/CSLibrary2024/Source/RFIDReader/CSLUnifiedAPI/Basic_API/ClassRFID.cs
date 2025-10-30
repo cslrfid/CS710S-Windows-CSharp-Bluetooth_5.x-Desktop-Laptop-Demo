@@ -606,6 +606,10 @@ namespace CSLibrary
             return Result.FAILURE;
         }
 
+        public void SetTriggerReleaseAbortRFID(bool enable)
+        {
+            _deviceHandler.notification.SetTriggerReleaseAbortRFID(enable);
+        }
 
         #endregion
 

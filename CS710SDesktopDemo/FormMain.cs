@@ -1,16 +1,16 @@
-﻿using System;
+﻿using CSLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using CSLibrary;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -96,6 +96,7 @@ namespace CS710SDesktopDemo
 
         private void buttonInventory_Click(object sender, EventArgs e)
         {
+            _reader.rfid.SetTriggerReleaseAbortRFID(false);
             _reader.rfid.AntennaPortSetState(0, CSLibrary.Constants.AntennaPortState.ENABLED);
             _reader.rfid.SetPowerLevel(300);
             _reader.rfid.SetCurrentLinkProfile(343);
@@ -113,6 +114,15 @@ namespace CS710SDesktopDemo
                 buttonInventory.Enabled = true;
                 buttonStopInventory.Enabled = true;
                 textBox3.Text += "Connected" + Environment.NewLine;
+
+                string [] profiles = _reader.rfid.GetActiveLinkProfileName ();
+
+                comboBox_profiles.Items.Clear();
+
+                foreach (string profile in profiles)
+                    comboBox_profiles.Items.Add(profile);
+
+                comboBox_profiles.SelectedIndex = 3;
             }
         }
 
