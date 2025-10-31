@@ -34,6 +34,7 @@ namespace CSLibrary
     public partial class RFIDReader
     {
         internal uint[] _profileList_CS710S = { 103, 302, 120, 323, 344, 345, 223, 222, 241, 244, 285 };
+        internal uint[] _profileList_CS710S_212 = { 103, 302, 120, 104, 323, 4323, 203, 202, 226, 344, 345, 4345, 225, 326, 325, 324, 4324, 342, 4342, 343, 4343, 205, 382, 4382, 1120, 1220, 1320, 1420, 5123, 5141, 5146, 5185, 5124, 5148, 5222, 5241, 5244, 5285, 5324, 5342, 5343, 5382, 5323, 5345 };
 
         internal string[] _profileNameList_CS710S = {
             "103: Miller 1 640kHz Tari 6.25us",
@@ -49,23 +50,74 @@ namespace CSLibrary
             "285: Miller 8 160kHz Tari 20us"
         };
 
+        internal string[] _profileNameList_CS710S_212 = {
+            "103: Miller 1 640kHz Tari 6.25us",
+            "302: Miller 1 640kHz Tari 7.25us",
+            "120: Miller 2 640kHz Tari 6.25us",
+            "104: FM0 320KHz Tari 6.25us",
+            "323: Miller 2 640Hz Tari 7.5us",
+            "4323: Miller 2 640Hz Tari 7.5us",
+            "203: FM0 426KHz Tari 12.5us",
+            "202: FM0 426KHz Tari 15us",
+            "226: Miller 2 426Hz Tari 12.5us",
+            "344: Miller 4 640kHz Tari 7.5us",
+            "345: Miller 4 640kHz Tari 7.5us",
+            "4345: Miller 4 640Hz Tari 7.5us",
+            "225: Miller 2 426Hz Tari 15us",
+            "326: Miller 2 320Hz Tari 12.5us",
+            "325: Miller 2 320Hz Tari 15us",
+            "324: Miller 2 320Hz Tari 20us",
+            "4324: Miller 2 320Hz Tari 20us",
+            "342: Miller 4 320Hz Tari 20us",
+            "4342: Miller 4 320Hz Tari 20us",
+            "343: Miller 4 250Hz Tari 20us",
+            "4343: Miller 4 250Hz Tari 20us",
+            "205: FM0 50KHz Tari 20us",
+            "382: Miller 8 160Hz Tari 20us",
+            "4382: Miller 8 160Hz Tari 20us",
+            "1120: [103, 148, 146, 185]" ,
+            "1220: [225, 223, 241, 285]",
+            "1320: [302, 345, 343, 382]",
+            "1420: [203, 223, 241, 285]",
+            "5123: [4123, 123]",
+            "5141: [4141, 141]",
+            "5146: [4146, 146]",
+            "5185: [4185, 185]",
+            "5124: [4124, 124]",
+            "5148: [4148, 148]",
+            "5222: [4222, 222]",
+            "5241: [4241, 241]",
+            "5244: [4244, 244]",
+            "5285: [4285, 285]",
+            "5324: [4324, 324]",
+            "5342: [4342, 342]",
+            "5343: [4343, 343]",
+            "5382: [4382, 382]",
+            "5323: [4323, 323]",
+            "5345: [4345, 345]"
+        };
 
-        public uint[] GetActiveLinkProfile_CS710S(RegionCode region)
+        bool IsVersionGreater(string v1, string v2)
         {
-            switch (region)
-            {
-                default:
-                    return _profileList_CS710S;
-            }
+            var ver1 = new Version(v1);
+            var ver2 = new Version(v2);
+            return ver1 >= ver2;
         }
 
-        public string[] GetActiveLinkProfileName_CS710S(RegionCode region)
+        internal uint[] GetActiveLinkProfile_CS710S(RegionCode region)
         {
-            switch (region)
-            {
-                default:
-                    return _profileNameList_CS710S;
-            }
+            if (IsVersionGreater(GetFirmwareVersionString_CS710S(), "2.1.2"))
+                return _profileList_CS710S_212;
+            else
+                return _profileList_CS710S;
+        }
+
+        internal string[] GetActiveLinkProfileName_CS710S(RegionCode region)
+        {
+            if (IsVersionGreater(GetFirmwareVersionString_CS710S(), "2.1.2"))
+                return _profileNameList_CS710S_212;
+            else
+                return _profileNameList_CS710S;
         }
 
         /// <summary>
@@ -80,8 +132,60 @@ namespace CSLibrary
         /// parameter does not represent a valid link profile, 
         /// RFID_ERROR_INVALID_PARAMETER is returned. </param>
         /// <returns></returns>
-        public Result SetCurrentLinkProfile_CS710S(uint profile)
+        internal Result SetCurrentLinkProfile_CS710S(uint profile)
         {
+            if (new Version(GetFirmwareVersionString()) >= new Version("2.1.2"))
+            {
+                switch (profile)
+                {
+                    case 102:
+                        profile = 302;
+                        break;
+
+                    case 124:
+                        profile = 323;
+                        break;
+
+                    case 147:
+                        profile = 344;
+                        break;
+
+                    case 148:
+                        profile = 345;
+                        break;
+
+                    case 224:
+                    case 126:
+                        profile = 326;
+                        break;
+
+                    case 223:
+                    case 125:
+                        profile = 325;
+                        break;
+
+                    case 123:
+                    case 222:
+                        profile = 324;
+                        break;
+
+                    case 141:
+                    case 241:
+                        profile = 342;
+                        break;
+
+                    case 146:
+                    case 244:
+                        profile = 343;
+                        break;
+
+                    case 185:
+                    case 285:
+                        profile = 382;
+                        break;
+                }
+            }
+
             RFIDRegister.AntennaPortConfig.RfMode((UInt16)profile);
             return Result.OK;
         }
@@ -92,7 +196,7 @@ namespace CSLibrary
         ///  radio module is executing a tag-protocol operation. 
         /// </summary>
         /// <returns></returns>
-        public Result GetCurrentLinkProfile_CS710S(ref uint link)
+        internal Result GetCurrentLinkProfile_CS710S(ref uint link)
         {
             return Result.FAILURE;
         }
