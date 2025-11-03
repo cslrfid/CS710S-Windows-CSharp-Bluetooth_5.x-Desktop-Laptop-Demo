@@ -169,6 +169,18 @@ namespace CSLibrary
             return _batteryLevel;
         }
 
+        public void SetTriggerReleaseAbortRFID(bool enable)
+        {
+            if (enable)
+            {
+                _deviceHandler.SendAsync(0, 2, DOWNLINKCMD.RFIDABORT, new byte[] { 0x01 }, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE);
+            }
+            else
+            {
+                _deviceHandler.SendAsync(0, 2, DOWNLINKCMD.RFIDABORT, new byte[] { 0x00 }, HighLevelInterface.BTWAITCOMMANDRESPONSETYPE.WAIT_BTAPIRESPONSE);
+            }
+        }
+
         public void ClearEventHandler()
         {
             //OnVoltageEvent = delegate { };
