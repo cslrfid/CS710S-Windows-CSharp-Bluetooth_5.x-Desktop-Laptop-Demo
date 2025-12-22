@@ -43,7 +43,26 @@ namespace CS710SDesktopDemo
             textBox3.Text = "Please wait, connecting..." + Environment.NewLine;
             _reader.rfid.OnStateChanged += new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent);
             _reader.notification.OnVoltageEvent += new EventHandler<CSLibrary.Notification.VoltageEventArgs>(VoltageEvent);
+            _reader.notification.OnKeyEvent += new EventHandler<CSLibrary.Notification.HotKeyEventArgs>(Notification_OnKeyEvent);
             _reader.ConnectAsync(CSLibrary.DeviceFinder.GetDeviceInformation(listView1.SelectedIndices[0]), CSLibrary.DeviceFinder.GetDeviceModel(listView1.SelectedIndices[0]));
+        }
+
+        private void Notification_OnKeyEvent(object sender, Notification.HotKeyEventArgs e)
+        {
+            this.Invoke((MethodInvoker)(() =>
+            {
+                if (e.KeyCode == CSLibrary.Notification.Key.BUTTON)
+                {
+                    if (e.KeyDown && buttonInventory.Enabled == true)
+                    {
+                        buttonInventory.PerformClick();
+                }
+                    else if (!e.KeyDown && buttonStopInventory.Enabled == true)
+                    {
+                        buttonStopInventory.PerformClick();
+                    }
+                }
+            }));
         }
 
         private void button1_Click(object sender, EventArgs e)
